@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart - FindABook</title>
+    <link rel="icon" href="assets/images/findabookLogo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+        :root {
+            --ink: #17231b;
+            --forest: #35513f;
+            --forest-light: #4a6b54;
+            --brass: #b8863b;
+            --brass-light: #d4a45c;
+            --paper: #f7f2e7;
+            --paper-white: #fffdf8;
+            --text: #232921;
+            --muted: #6f7566;
+            --line: #e4dcc9;
+            --danger: #b5533f;
+        }
+
+        body {
+            background: var(--paper);
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Fraunces', serif;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 253, 248, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 24px rgba(23, 35, 27, 0.06);
+            padding: 18px 0;
+        }
+
+        /* Page Title */
+        .page-header {
+            background: var(--ink);
+            padding: 40px 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                    radial-gradient(circle at 10% 20%, rgba(184, 134, 59, 0.18) 0%, transparent 45%),
+                    radial-gradient(circle at 90% 90%, rgba(74, 107, 84, 0.4) 0%, transparent 50%);
+        }
+
+        .page-header .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header h1 {
+            font-weight: 600;
+        }
+
+        .page-header p {
+            color: #cfd6c9;
+        }
+
+        /* Cart Card */
+        .cart-card {
+            background: var(--paper-white);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 8px 26px rgba(23, 35, 27, 0.06);
+            margin-bottom: 24px;
+            transition: 0.3s ease;
+        }
+
+        .cart-card:hover {
+            box-shadow: 0 12px 32px rgba(23, 35, 27, 0.1);
+        }
+
+        /* Cart Item */
+        .cart-item {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            border-bottom: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 20px 10px;
+        }
+
+        .cart-item:hover {
+            border: 1px solid var(--brass-light);
+            background: var(--paper);
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-image {
+            width: 100px;
+            height: 140px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 3px solid var(--paper-white);
+            outline: 1px solid var(--line);
+        }
+
+        .cart-info {
+            flex: 1;
+        }
+
+        .cart-title {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--ink);
+        }
+
+        .cart-author {
+            color: var(--muted);
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+
+        .cart-price {
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--forest);
+        }
+
+        /* Quantity */
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .qty-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            background: var(--paper-white);
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .qty-btn:hover {
+            border-color: var(--forest);
+            color: var(--forest);
+        }
+
+        /* Summary Card */
+        .summary-card {
+            background: var(--paper-white);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 26px;
+            box-shadow: 0 8px 26px rgba(23, 35, 27, 0.06);
+            position: sticky;
+            top: 100px;
+        }
+
+        .summary-title {
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--ink);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .summary-total {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--forest);
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: var(--forest);
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            color: white;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        .checkout-btn:hover {
+            background: var(--forest-light);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(53, 81, 63, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cart-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .summary-card {
+                position: static;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="header"></div>
+
+<div class="page-header text-center">
+    <div class="container">
+        <h1>My Shopping Cart</h1>
+        <p>Review your selected books before checkout</p>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row">
+
+        <!-- Cart Items -->
+        <div class="col-lg-8">
+            <div class="cart-card g-4 " id="cart-item-container">
+
+
+                <!--                <div class="cart-item">-->
+                <!--                    <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=200" class="cart-image">-->
+                <!--                    <div class="cart-info">-->
+                <!--                        <div class="cart-title">Sapiens</div>-->
+                <!--                        <div class="cart-author">by Yuval Noah Harari</div>-->
+                <!--                        <div class="cart-price">$15.99</div>-->
+                <!--                    </div>-->
+
+                <!--                    <div class="quantity-control">-->
+                <!--                        <button class="qty-btn">-</button>-->
+                <!--                        <span >2</span>-->
+                <!--                        <button class="qty-btn">+</button>-->
+                <!--                    </div>-->
+
+                <!--                    <button class="qty-btn text-danger"><i data-feather="trash-2"></i></button>-->
+                <!--                </div>-->
+
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="col-lg-4">
+            <div class="summary-card">
+                <div class="summary-title">Order Summary</div>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="sub-total">Rs.***.**</span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span id="shipping">Rs.***.**</span>
+                </div>
+
+                <hr>
+
+                <div class="summary-row summary-total">
+                    <span>Total</span>
+                    <span id="total" >Rs.***.**</span>
+                </div>
+
+                <button class="checkout-btn"
+                        onclick="authenticateCheckout();" id="checkout">
+                    Proceed to Checkout
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+    feather.replace();
+
+</script>
+
+<script src="assets/js/header.js"></script>
+<script type="text/javascript" src="https://www.payhere.lk/lib/payhere.js"></script>
+<script src="assets/js/notiflix-aio-3.2.8.min.js"></script>
+<script src="assets/js/cart.js"></script>
+</body>
+</html>

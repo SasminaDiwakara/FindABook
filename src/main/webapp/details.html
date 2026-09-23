@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product View - FindABook</title>
+    <link rel="icon" href="assets/images/findabookLogo.png">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+        :root {
+            --ink: #17231b;
+            --ink-soft: #26362b;
+            --forest: #35513f;
+            --forest-light: #4a6b54;
+            --brass: #b8863b;
+            --brass-light: #d4a45c;
+            --paper: #f7f2e7;
+            --paper-white: #fffdf8;
+            --text: #232921;
+            --muted: #6f7566;
+            --line: #e4dcc9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--paper);
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Fraunces', serif;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 253, 248, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 24px rgba(23, 35, 27, 0.06);
+            padding: 18px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-family: 'Fraunces', serif;
+            font-weight: 700;
+            color: var(--ink);
+            font-size: 1.6rem;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb-section {
+            padding: 22px 0 4px;
+        }
+
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin: 0;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .breadcrumb-item a {
+            color: var(--forest);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--brass);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--muted);
+        }
+
+        /* Product Section */
+        .product-section {
+            padding: 30px 0 40px;
+        }
+
+        .product-image-container {
+            background: var(--paper-white);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 34px;
+            box-shadow: 0 8px 28px rgba(23, 35, 27, 0.07);
+            position: sticky;
+            top: 100px;
+        }
+
+        .product-main-image {
+            width: 100%;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            box-shadow: 0 16px 36px rgba(23, 35, 27, 0.2);
+            border: 6px solid var(--paper-white);
+            outline: 1px solid var(--line);
+        }
+
+        .product-thumbnails {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .thumbnail {
+            height: 100px;
+            width: 100px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid var(--line);
+            transition: all 0.3s ease;
+        }
+
+        .thumbnail:hover, .thumbnail.active {
+            border-color: var(--brass);
+        }
+
+        .product-info {
+            background: var(--paper-white);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 8px 28px rgba(23, 35, 27, 0.07);
+        }
+
+        .product-badge {
+            display: inline-block;
+            background: var(--brass);
+            color: var(--ink);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.78rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .product-title {
+            font-size: 2.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--ink);
+            letter-spacing: -0.3px;
+        }
+
+        .product-author {
+            font-size: 1.05rem;
+            color: var(--forest);
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-style: italic;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .stars {
+            color: var(--brass);
+            font-size: 1.15rem;
+        }
+
+        .rating-text {
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .rating-count {
+            color: var(--muted);
+        }
+
+        .product-price {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .current-price {
+            font-family: 'Space Mono', monospace;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--forest);
+        }
+
+        .original-price {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3rem;
+            color: var(--muted);
+            text-decoration: line-through;
+        }
+
+        .discount-badge {
+            background: var(--forest);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .stock-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .stock-badge {
+            background: #dcecdf;
+            color: var(--forest);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+
+        .stock-badge2 {
+            background: #f2dcd6;
+            color: #9c4a3a;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .product-description {
+            margin-bottom: 32px;
+            line-height: 1.8;
+            color: var(--text);
+        }
+
+        .product-meta {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text);
+        }
+
+        .meta-item i {
+            color: var(--forest);
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .quantity-label {
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .quantity-btn {
+            background: var(--paper-white);
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .quantity-btn:hover {
+            background: var(--paper);
+            color: var(--forest);
+        }
+
+        .quantity-input {
+            border: none;
+            border-left: 1px solid var(--line);
+            border-right: 1px solid var(--line);
+            padding: 12px 20px;
+            width: 80px;
+            text-align: center;
+            font-weight: 600;
+            background: var(--paper-white);
+            color: var(--text);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .btn-buyNow {
+            flex: 1;
+            background: var(--forest);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-buyNow:hover {
+            background: var(--forest-light);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(53, 81, 63, 0.35);
+        }
+
+        .btn-wishlist {
+            background: var(--paper-white);
+            border: 1px solid var(--brass);
+            color: var(--brass);
+            padding: 16px 24px;
+            border-radius: 10px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .btn-wishlist:hover {
+            background: var(--brass);
+            color: white;
+        }
+
+        .btn-add-cart {
+            background: var(--paper-white);
+            border: 1px solid var(--forest);
+            color: var(--forest);
+            padding: 16px 24px;
+            border-radius: 10px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .btn-add-cart:hover {
+            background: var(--forest);
+            color: white;
+        }
+
+        .additional-actions {
+            display: flex;
+            gap: 16px;
+            padding-top: 24px;
+            border-top: 1px solid var(--line);
+        }
+
+        .action-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--forest);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .action-link:hover {
+            color: var(--brass);
+            gap: 12px;
+        }
+
+        /* Tabs Section */
+        .details-tabs {
+            margin-top: 56px;
+        }
+
+        .nav-tabs {
+            border: none;
+            gap: 8px;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            background: var(--paper-white);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 13px 26px;
+            font-weight: 600;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs .nav-link:hover {
+            background: var(--paper);
+            color: var(--forest);
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--forest);
+            border-color: var(--forest);
+            color: white;
+        }
+
+        .tab-content {
+            background: var(--paper-white);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 40px;
+            margin-top: 16px;
+            box-shadow: 0 8px 28px rgba(23, 35, 27, 0.07);
+        }
+
+        /* Reviews */
+        .review-summary {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .review-score {
+            text-align: center;
+        }
+
+        .review-score-number {
+            font-family: 'Space Mono', monospace;
+            font-size: 3.6rem;
+            font-weight: 700;
+            color: var(--forest);
+        }
+
+        .review-bars {
+            flex: 1;
+        }
+
+        .review-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .bar-label {
+            width: 60px;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .bar-fill {
+            flex: 1;
+            height: 8px;
+            background: var(--line);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .bar-progress {
+            height: 100%;
+            background: var(--brass);
+        }
+
+        .bar-count {
+            width: 40px;
+            text-align: right;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .review-item {
+            padding: 24px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .reviewer-info {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .reviewer-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--forest);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .reviewer-name {
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .review-date {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .review-text {
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        /* Related Books */
+        .related-books {
+            margin-top: 56px;
+        }
+
+        .section-title {
+            font-size: 1.85rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: var(--ink);
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 24px;
+        }
+
+        .related-book-card {
+            background: var(--paper-white);
+            border: 1px solid var(--line);
+            border-left: 4px solid var(--forest);
+            border-radius: 4px 10px 10px 4px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(23, 35, 27, 0.06);
+            transition: all 0.35s ease;
+            cursor: pointer;
+        }
+
+        .related-book-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 34px rgba(23, 35, 27, 0.16);
+        }
+
+        .related-book-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+        }
+
+        .related-book-info {
+            padding: 16px;
+        }
+
+        .related-book-title {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 4px;
+            color: var(--ink);
+        }
+
+        .related-book-author {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+
+        .related-book-price {
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            color: var(--forest);
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 991px) {
+            .product-image-container {
+                position: static;
+                margin-bottom: 30px;
+            }
+
+            .product-meta {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .review-summary {
+                flex-direction: column;
+                gap: 24px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .product-title {
+                font-size: 1.65rem;
+            }
+
+            .current-price {
+                font-size: 1.8rem;
+            }
+
+            .related-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .btn-buyNow:disabled,
+        .btn-add-cart:disabled,
+        .quantity-btn:disabled,
+        .quantity-input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<div id="header"></div>
+
+<!-- Breadcrumb -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="products.html">Books</a></li>
+                <li class="breadcrumb-item" id="category">***</li>
+                <li class="breadcrumb-item active" id="title0">***</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Product Section -->
+<div class="product-section">
+    <div class="container">
+        <div class="row">
+            <!-- Product Images -->
+            <div class="col-lg-5">
+                <div class="product-image-container">
+                    <img src="#" alt="The Midnight Library" class="product-main-image" id="main-img">
+                    <div class="product-thumbnails">
+                        <!--                        <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=100&h=100&fit=crop" onclick="changeImage(this)">-->
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Info -->
+            <div class="col-lg-7">
+                <div class="product-info">
+                    <h1 class="product-title" id="product-title">The Midnight Library</h1>
+                    <div class="product-author" id="product-author">by Matt Haig</div>
+                    <input style="display: none;" id="product-id">
+
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-text">4.8</span>
+                        <span class="rating-count">(2,341 reviews)</span>
+                    </div>
+
+                    <div class="product-price">
+                        <span class="current-price" id="current-price">$12.99</span>
+                        <span class="original-price" id="original-price">$16.99</span>
+                        <span class="discount-badge">Save 24%</span>
+                    </div>
+
+                    <div class="stockDisplay"></div>
+
+
+                    <div class="product-meta">
+
+                        <div class="meta-item">
+                            <i data-feather="calendar"></i>
+                            <div>
+                                <div style="font-weight: 600;">Published</div>
+                                <div>
+                                    <p id="date"></p>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="quantity-selector">
+                        <span class="quantity-label">Quantity:</span>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="decreaseQuantity()">−</button>
+                            <input type="number" class="quantity-input" id="quantity" value="1" min="1">
+                            <button class="quantity-btn" onclick="increaseQuantity()">+</button>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn-buyNow" onclick="authenticateBuy();">
+                            <i data-feather="credit-card"></i>
+                            Buy Now
+                        </button>
+                        <button class="btn-add-cart" onclick="addToCart();">
+                            <i data-feather="shopping-cart"></i>
+                        </button>
+                        <button class="btn-wishlist" onclick="addToWishlist();">
+                            <i data-feather="heart"></i>
+                        </button>
+
+                    </div>
+
+                    <div class="additional-actions">
+                        <a href="#" class="action-link">
+                            <i data-feather="share-2"></i>
+                            Share
+                        </a>
+                        <a href="#" class="action-link">
+                            <i data-feather="git-compare"></i>
+                            Compare
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Details Tabs -->
+        <div class="details-tabs">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#description">Description</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#shipping">Shipping Info</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <!-- Description Tab -->
+                <div class="tab-pane fade show active" id="description">
+                    <h3 style="font-weight: 600; margin-bottom: 20px;">About This Book</h3>
+                    <p style="line-height: 1.8; color: var(--text); margin-bottom: 20px;">
+                        Somewhere out beyond the edge of the universe there is a library that contains an infinite
+                        number of books, each one the story of another reality. One tells the story of your life as it
+                        is, along with another book for the other life you could have lived if you had made a different
+                        choice at any point in your life. While we all wonder how our lives might have been, what if you
+                        had the chance to go to the library and see for yourself? Would any of these other lives truly
+                        be better?
+                    </p>
+                    <p style="line-height: 1.8; color: var(--text); margin-bottom: 20px;">
+                        In The Midnight Library, Matt Haig's enchanting new novel, Nora Seed finds herself faced with
+                        this decision. Faced with the possibility of changing her life for a new one, following a
+                        different career, undoing old breakups, realizing her dreams of becoming a glaciologist; she
+                        must search within herself as she travels through the Midnight Library to decide what is truly
+                        fulfilling in life, and what makes it worth living in the first place.
+                    </p>
+                    <!-- <h4 style="font-weight: 700; margin: 24px 0 16px;">Key Features</h4>
+                    <ul style="line-height: 2; color: #4a5568;">
+                        <li>An instant New York Times bestseller</li>
+                        <li>Over 3 million copies sold worldwide</li>
+                        <li>Translated into 40+ languages</li>
+                        <li>Perfect for book clubs and discussions</li>
+                        <li>Beautiful hardcover edition with dust jacket</li>
+                    </ul> -->
+                </div>
+
+                <!-- Reviews Tab -->
+                <div class="tab-pane fade" id="reviews">
+                    <div class="review-summary">
+                        <div class="review-score">
+                            <div class="review-score-number">4.8</div>
+                            <div class="stars">★★★★★</div>
+                            <div style="color: var(--muted); margin-top: 8px;">Based on 234 reviews</div>
+                        </div>
+                        <div class="review-bars">
+                            <div class="review-bar">
+                                <span class="bar-label">5 stars</span>
+                                <div class="bar-fill">
+                                    <div class="bar-progress" style="width: 75%"></div>
+                                </div>
+                                <span class="bar-count">175</span>
+                            </div>
+                            <div class="review-bar">
+                                <span class="bar-label">4 stars</span>
+                                <div class="bar-fill">
+                                    <div class="bar-progress" style="width: 15%"></div>
+                                </div>
+                                <span class="bar-count">35</span>
+                            </div>
+                            <div class="review-bar">
+                                <span class="bar-label">3 stars</span>
+                                <div class="bar-fill">
+                                    <div class="bar-progress" style="width: 7%"></div>
+                                </div>
+                                <span class="bar-count">16</span>
+                            </div>
+                            <div class="review-bar">
+                                <span class="bar-label">2 stars</span>
+                                <div class="bar-fill">
+                                    <div class="bar-progress" style="width: 2%"></div>
+                                </div>
+                                <span class="bar-count">5</span>
+                            </div>
+                            <div class="review-bar">
+                                <span class="bar-label">1 star</span>
+                                <div class="bar-fill">
+                                    <div class="bar-progress" style="width: 1%"></div>
+                                </div>
+                                <span class="bar-count">3</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review Items -->
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">SJ</div>
+                                <div>
+                                    <div class="reviewer-name">Sarah Johnson</div>
+                                    <div class="review-date">2 days ago</div>
+                                </div>
+                            </div>
+                            <div class="stars">★★★★★</div>
+                        </div>
+                        <p class="review-text">
+                            Absolutely loved this book! The concept is fascinating and the writing is beautiful. It made
+                            me think about my own life choices in a profound way. Highly recommend for anyone who enjoys
+                            philosophical fiction.
+                        </p>
+                    </div>
+
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">MR</div>
+                                <div>
+                                    <div class="reviewer-name">Michael Roberts</div>
+                                    <div class="review-date">1 week ago</div>
+                                </div>
+                            </div>
+                            <div class="stars">★★★★★</div>
+                        </div>
+                        <p class="review-text">
+                            This book came at the perfect time in my life. It's a beautiful exploration of regret,
+                            second chances, and what makes life worth living. Matt Haig's writing is both accessible and
+                            profound.
+                        </p>
+                    </div>
+
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">EC</div>
+                                <div>
+                                    <div class="reviewer-name">Emma Chen</div>
+                                    <div class="review-date">2 weeks ago</div>
+                                </div>
+                            </div>
+                            <div class="stars">★★★★☆</div>
+                        </div>
+                        <p class="review-text">
+                            Great concept and engaging story. Some parts felt a bit repetitive, but overall a
+                            thought-provoking read. The ending was particularly satisfying.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="shipping">
+                    <h3 style="font-weight: 600; margin-bottom: 20px;">Shipping Information</h3>
+                    <div style="line-height: 1.8; color: var(--text);">
+                        <p><strong>Standard Shipping (5-7 business days):</strong> FREE on orders over $35</p>
+                        <p><strong>Express Shipping (2-3 business days):</strong> $9.99</p>
+                        <p><strong>Overnight Shipping (1 business day):</strong> $19.99</p>
+                        <p style="margin-top: 20px;">All orders are processed within 1-2 business days. You will receive
+                            a tracking number once your order ships.</p>
+                        <p><strong>Returns:</strong> 30-day return policy. Items must be in original condition.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="assets/js/header.js"></script>
+<script type="text/javascript" src="https://www.payhere.lk/lib/payhere.js"></script>
+<script src="assets/js/action.js"></script>
+<script src="assets/js/details.js"></script>
+<script src="assets/js/notiflix-aio-3.2.8.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    feather.replace();
+
+    function increaseQuantity() {
+
+        const input = document.getElementById('quantity');
+        const currentValue = parseInt(input.value);
+        if (currentValue < parseInt(input.max)) {
+            input.value = currentValue + 1;
+        }
+    }
+
+    function decreaseQuantity() {
+        const input = document.getElementById('quantity');
+        const currentValue = parseInt(input.value);
+
+        if (currentValue > parseInt(input.min)) {
+            input.value = currentValue - 1;
+        }
+    }
+</script>
+
+</body>
+</html>

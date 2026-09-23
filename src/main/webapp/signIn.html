@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - FindABook</title>
+    <link rel="icon" href="assets/images/findabookLogo.png">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap');
+
+        :root {
+            --ink: #17231b;
+            --ink-soft: #26362b;
+            --forest: #35513f;
+            --forest-light: #4a6b54;
+            --brass: #b8863b;
+            --brass-light: #d4a45c;
+            --paper: #f7f2e7;
+            --paper-white: #fffdf8;
+            --text: #232921;
+            --muted: #6f7566;
+            --line: #e4dcc9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--paper);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                    radial-gradient(circle at 20% 20%, rgba(184, 134, 59, 0.08) 0%, transparent 45%),
+                    radial-gradient(circle at 85% 80%, rgba(53, 81, 63, 0.1) 0%, transparent 50%);
+        }
+
+        .floating-elements {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .float-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(53, 81, 63, 0.05);
+            border: 1px solid rgba(184, 134, 59, 0.12);
+            animation: float 22s infinite ease-in-out;
+        }
+
+        .circle-1 {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .circle-2 {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 3s;
+        }
+
+        .circle-3 {
+            width: 80px;
+            height: 80px;
+            bottom: 15%;
+            left: 15%;
+            animation-delay: 6s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            33% {
+                transform: translateY(-30px) rotate(120deg);
+            }
+
+            66% {
+                transform: translateY(30px) rotate(240deg);
+            }
+        }
+
+        .auth-container {
+            max-width: 1000px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-wrapper {
+            display: grid;
+            grid-template-columns: 55% 45%;
+            background: var(--paper-white);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(23, 35, 27, 0.25);
+            border: 1px solid var(--line);
+        }
+
+        .auth-left {
+            background: var(--paper-white);
+            padding: 60px 50px;
+            overflow-y: auto;
+            max-height: 95vh;
+        }
+
+        .auth-left::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .auth-left::-webkit-scrollbar-track {
+            background: var(--paper);
+            border-radius: 10px;
+        }
+
+        .auth-left::-webkit-scrollbar-thumb {
+            background: var(--brass);
+            border-radius: 10px;
+        }
+
+        .form-header {
+            margin-bottom: 36px;
+        }
+
+        .form-header h2 {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            color: var(--ink);
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .form-header p {
+            color: var(--muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* Modern Floating Label Input */
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 26px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 18px 20px 18px 52px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            background: var(--paper);
+            color: var(--text);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--brass);
+            background: var(--paper-white);
+            box-shadow: 0 0 0 3px rgba(184, 134, 59, 0.15);
+        }
+
+        .form-input:focus~.floating-label,
+        .form-input:not(:placeholder-shown)~.floating-label {
+            top: -10px;
+            left: 48px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--forest);
+            background: var(--paper-white);
+            padding: 0 8px;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .floating-label {
+            position: absolute;
+            left: 52px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 1rem;
+            font-weight: 500;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: transparent;
+        }
+
+        .input-icon-left {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            width: 20px;
+            height: 20px;
+            transition: color 0.3s ease;
+            pointer-events: none;
+        }
+
+        .form-input:focus~.input-icon-left {
+            color: var(--brass);
+        }
+
+        .input-icon-right {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .input-icon-right:hover {
+            color: var(--brass);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0 30px;
+        }
+
+        /* Modern Checkbox */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .checkbox-input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .checkbox-custom {
+            width: 22px;
+            height: 22px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: var(--paper-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-shrink: 0;
+        }
+
+        .checkbox-input:checked~.checkbox-custom {
+            background: var(--forest);
+            border-color: var(--forest);
+        }
+
+        .checkbox-custom::after {
+            content: '';
+            width: 11px;
+            height: 11px;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
+            background-size: contain;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .checkbox-input:checked~.checkbox-custom::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .checkbox-label {
+            color: var(--text);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .forgot-link {
+            color: var(--forest);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .forgot-link:hover {
+            color: var(--brass);
+            transform: translateX(3px);
+        }
+
+        /* Modern Button */
+        .btn-submit {
+            width: 100%;
+            padding: 17px;
+            border: none;
+            border-radius: 10px;
+            background: var(--forest);
+            color: white;
+            font-size: 1.02rem;
+            font-weight: 700;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 22px rgba(53, 81, 63, 0.3);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-submit:hover {
+            background: var(--forest-light);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(53, 81, 63, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 34px 0;
+            color: var(--muted);
+            font-size: 0.75rem;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--line);
+        }
+
+        .divider::before {
+            margin-right: 20px;
+        }
+
+        .divider::after {
+            margin-left: 20px;
+        }
+
+        .social-login {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 32px;
+        }
+
+        .social-btn {
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            background: var(--paper-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 700;
+            color: var(--text);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .social-btn:hover {
+            border-color: var(--brass);
+            background: var(--paper);
+            transform: translateY(-2px);
+        }
+
+        .signup-link {
+            text-align: center;
+            padding-top: 26px;
+            border-top: 1px solid var(--line);
+            color: var(--text);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .signup-link a {
+            color: var(--forest);
+            text-decoration: none;
+            font-weight: 800;
+            transition: color 0.3s ease;
+        }
+
+        .signup-link a:hover {
+            color: var(--brass);
+        }
+
+        .auth-right {
+            background: var(--ink);
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-right::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                    radial-gradient(circle at 15% 15%, rgba(184, 134, 59, 0.2) 0%, transparent 45%),
+                    radial-gradient(circle at 90% 90%, rgba(74, 107, 84, 0.4) 0%, transparent 50%);
+        }
+
+        .auth-right-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .navbar-brand {
+            display: inline-block;
+            margin-bottom: 36px;
+        }
+
+        .brand-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand-text h2 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin: 0;
+        }
+
+        .auth-right h1 {
+            font-family: 'Fraunces', serif;
+            color: white;
+            font-size: 2.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .auth-right p {
+            color: #cfd6c9;
+            font-size: 1.02rem;
+            line-height: 1.7;
+            margin-bottom: 50px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 22px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-number {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: var(--brass-light);
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            color: #cfd6c9;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 991px) {
+            .auth-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-right {
+                padding: 40px 30px;
+                order: -1;
+            }
+
+            .auth-right h1 {
+                font-size: 1.75rem;
+            }
+
+            .stats {
+                gap: 20px;
+            }
+
+            .auth-left {
+                padding: 40px 30px;
+                max-height: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .auth-wrapper {
+                border-radius: 16px;
+            }
+
+            .auth-left,
+            .auth-right {
+                padding: 30px 24px;
+            }
+
+            .form-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .social-login {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+            }
+
+            .stat-item {
+                padding: 16px;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .stat-label {
+                font-size: 0.72rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .auth-right h1 {
+                font-size: 1.5rem;
+            }
+
+            .form-input {
+                padding: 16px 18px 16px 48px;
+                font-size: 0.95rem;
+            }
+
+            .floating-label {
+                left: 48px;
+                font-size: 0.95rem;
+            }
+
+            .form-input:focus~.floating-label,
+            .form-input:not(:placeholder-shown)~.floating-label {
+                left: 44px;
+            }
+
+            .remember-forgot {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+            filter: brightness(0) invert(1);
+        }
+
+
+        /* Modal container */
+        .modern-modal {
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            padding: 10px;
+            background: var(--paper-white);
+            box-shadow: 0 20px 50px rgba(23, 35, 27, 0.25);
+        }
+
+        .modal-title.gradient-text {
+            font-family: 'Fraunces', serif;
+        }
+
+        /* Gradient text */
+        .gradient-text {
+            color: var(--ink);
+        }
+
+        /* Inputs */
+        .modern-input {
+            background: var(--paper);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            transition: 0.3s;
+        }
+
+        .modern-input:focus-within {
+            border-color: var(--brass);
+            box-shadow: 0 0 0 3px rgba(184, 134, 59, 0.15);
+        }
+
+        .modern-input .input-group-text {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+        }
+
+        .modern-input .form-control {
+            border: none;
+            background: transparent;
+            box-shadow: none;
+            padding: 12px;
+            color: var(--text);
+        }
+
+        /* Button */
+        .btn-gradient {
+            background: var(--forest);
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-gradient:hover {
+            background: var(--forest-light);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(53, 81, 63, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+<div class="floating-elements">
+    <div class="float-circle circle-1"></div>
+    <div class="float-circle circle-2"></div>
+    <div class="float-circle circle-3"></div>
+</div>
+
+<div class="auth-container">
+    <div class="auth-wrapper">
+        <!-- Left Panel - Form -->
+        <div class="auth-left">
+            <div class="form-header">
+                <h2>Welcome Back</h2>
+                <p>Sign in to continue your reading journey</p>
+            </div>
+
+            <form id="signinForm">
+                <div class="input-wrapper">
+                    <input type="email" class="form-input" id="email" placeholder=" ">
+                    <label class="floating-label">Email Address</label>
+                    <i data-feather="mail" class="input-icon-left"></i>
+                </div>
+
+                <div class="input-wrapper">
+                    <input type="password" class="form-input" id="password" placeholder=" ">
+                    <label class="floating-label">Password</label>
+                    <i data-feather="lock" class="input-icon-left"></i>
+                    <i data-feather="eye" class="input-icon-right" id="togglePassword"
+                       onclick="togglePassword()"></i>
+                </div>
+
+                <div class="remember-forgot">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="checkbox-input" id="remember">
+                        <div class="checkbox-custom"></div>
+                        <span class="checkbox-label">Remember me</span>
+                    </label>
+                    <p href="#" class="forgot-link" onclick="forgotPassword()" style="background-color: white; border: none">Forgot Password?</p>
+                </div>
+
+                <button type="button" class="btn-submit" onclick="signIn()">Sign In</button>
+            </form>
+
+
+            <div class="signup-link">
+                Don't have an account? <a href="signUp.html">Sign Up</a>
+            </div>
+        </div>
+
+        <!-- Right Panel - Info -->
+        <div class="auth-right">
+            <div class="auth-right-content">
+
+
+                <a href="/" class="navbar-brand">
+                    <img src="assets/images/findabookLogo2.png" alt="BookWorm Haven Logo" class="logo-img">
+                </a>
+
+                <h1>Continue Your Reading Adventure</h1>
+                <p>Sign in to access your personalized library, pick up where you left off, and discover new books
+                    curated just for you.</p>
+
+                <!-- <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number">50K+</div>
+                        <div class="stat-label">Books</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">10K+</div>
+                        <div class="stat-label">Readers</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">4.9★</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modern-modal">
+
+            <!-- Header -->
+            <div class="modal-header border-0 pb-0">
+                <h4 class="modal-title w-100 text-center fw-bold gradient-text">
+                    Reset Password
+                </h4>
+                <button type="button" class="btn-close position-absolute end-0 me-3"
+                        data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body px-4 pt-2 pb-4">
+
+                <p class="text-center text-muted mb-4">
+                    Enter your email and verification code to reset your password
+                </p>
+
+                <!-- Email -->
+                <div class="input-group modern-input mb-3">
+                    <span class="input-group-text">
+                        <i data-feather="mail"></i>
+                    </span>
+                    <input type="text" class="form-control" placeholder="Email Address" id="email-name">
+                </div>
+
+                <!-- OTP -->
+                <div class="input-group modern-input mb-3">
+                    <span class="input-group-text">
+                        <i data-feather="shield"></i>
+                    </span>
+                    <input type="text" class="form-control" placeholder="Verification Code" id="code">
+                </div>
+
+                <!-- Password -->
+                <div class="input-group modern-input mb-4">
+                    <span class="input-group-text">
+                        <i data-feather="lock"></i>
+                    </span>
+                    <input type="password" class="form-control" placeholder="New Password" id="newPassword">
+                </div>
+
+                <!-- Button -->
+                <button class="btn btn-gradient w-100" onclick="resetPassword()">
+                    Reset Password
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    feather.replace();
+
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const icon = document.getElementById('togglePassword');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.setAttribute('data-feather', 'eye-off');
+        } else {
+            passwordInput.type = 'password';
+            icon.setAttribute('data-feather', 'eye');
+        }
+        feather.replace();
+    }
+
+</script>
+
+<script src="assets/js/signIn.js"></script>
+<script src="assets/js/forgotPw.js"></script>
+<script src="assets/js/notiflix-aio-3.2.8.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
