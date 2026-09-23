@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - FindABook</title>
+    <link rel="icon" href="assets/images/findabookLogo.png">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+            font-family: 'Inter', sans-serif;
+            color: #1a202c;
+        }
+
+        .admin-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            padding: 24px 0;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 0 24px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 24px;
+        }
+
+        .sidebar-logo {
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.5rem;
+        }
+
+        .sidebar-subtitle {
+            color: #a0aec0;
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0 16px;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 4px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            color: #cbd5e0;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .sidebar-menu a.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .sidebar-menu a i {
+            width: 20px;
+            height: 20px;
+        }
+
+        .admin-main {
+            margin-left: 260px;
+            min-height: 100vh;
+        }
+
+        .admin-topbar {
+            background: white;
+            padding: 20px 32px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .topbar-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #1a202c;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .topbar-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: #f7fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .topbar-icon:hover {
+            background: #e2e8f0;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 18px;
+            height: 18px;
+            background: #f56565;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .admin-content {
+            padding: 32px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-icon i {
+            color: white;
+            width: 24px;
+            height: 24px;
+        }
+
+        .stat-trend {
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .trend-up {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .trend-down {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-label {
+            color: #718096;
+            font-weight: 600;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1a202c;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        .admin-table thead th {
+            background: #f7fafc;
+            color: #4a5568;
+            font-weight: 700;
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-table thead th:first-child {
+            border-radius: 10px 0 0 10px;
+        }
+
+        .admin-table thead th:last-child {
+            border-radius: 0 10px 10px 0;
+        }
+
+        .admin-table tbody tr {
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .admin-table tbody tr:hover {
+            background: #f7fafc;
+            transform: scale(1.01);
+        }
+
+        .admin-table tbody td {
+            padding: 16px;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .admin-table tbody td:first-child {
+            border-left: 1px solid #e2e8f0;
+            border-radius: 10px 0 0 10px;
+        }
+
+        .admin-table tbody td:last-child {
+            border-right: 1px solid #e2e8f0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .product-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .product-image {
+            width: 50px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 2px;
+        }
+
+        .product-author {
+            color: #718096;
+            font-size: 0.85rem;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .badge-success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .badge-warning {
+            background: #feebc8;
+            color: #7c2d12;
+        }
+
+        .badge-danger {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: #bee3f8;
+            color: #2c5282;
+        }
+
+        .btn-edit:hover {
+            background: #90cdf4;
+        }
+
+        .btn-delete {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .btn-delete:hover {
+            background: #fc8181;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-control, .form-select {
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 16px 10px 44px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+        }
+
+        @media (max-width: 991px) {
+            .admin-sidebar {
+                transform: translateX(-260px);
+            }
+
+            .admin-sidebar.active {
+                transform: translateX(0);
+            }
+
+            .admin-main {
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .admin-content {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar-title {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="assets/richtexteditor/rte_theme_default.css"/>
+    <script type="text/javascript" src="assets/richtexteditor/rte.js"></script>
+    <script type="text/javascript" src='assets/richtexteditor/plugins/all_plugins.js'></script>
+</head>
+<body>
+<div class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-logo">FindABook</div>
+        <div class="sidebar-subtitle">Admin Panel</div>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="#" class="active" onclick="showSection('dashboard')">
+            <i data-feather="home"></i> Dashboard
+        </a></li>
+        <li><a href="#" onclick="showSection('books')">
+            <i data-feather="book"></i> Books
+        </a></li>
+        <li><a href="#" onclick="showSection('authors')">
+            <i data-feather="users"></i> Authors
+        </a></li>
+        <li><a href="#" onclick="showSection('categories')">
+            <i data-feather="grid"></i> Categories
+        </a></li>
+        <li><a href="#" onclick="showSection('orders')">
+            <i data-feather="shopping-bag"></i> Orders
+        </a></li>
+        <li><a href="#" onclick="showSection('customers')">
+            <i data-feather="user"></i> Customers
+        </a></li>
+        <li><a href="#" onclick="showSection('stock')">
+            <i data-feather="package"></i> Stock Management
+        </a></li>
+        <!--        <li><a href="#" onclick="showSection('coupons')">-->
+        <!--            <i data-feather="tag"></i> Coupons-->
+        <!--        </a></li>-->
+        <!--        <li><a href="#" onclick="showSection('settings')">-->
+        <!--            <i data-feather="settings"></i> Settings-->
+        <!--        </a></li>-->
+    </ul>
+</div>
+
+<div class="admin-main">
+    <div class="admin-topbar">
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <button class="topbar-icon mobile-menu-btn" style="display: none;" onclick="toggleSidebar()">
+                <i data-feather="menu"></i>
+            </button>
+            <h1 class="topbar-title">Dashboard</h1>
+        </div>
+        <div class="topbar-actions">
+            <div class="topbar-icon">
+                <i data-feather="bell"></i>
+                <span class="notification-badge">5</span>
+            </div>
+            <div class="admin-avatar">AD</div>
+        </div>
+    </div>
+
+    <div class="admin-content">
+        <!-- Dashboard Section -->
+        <div id="dashboardSection">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i data-feather="dollar-sign"></i>
+                    </div>
+
+                    <div>
+                        <div class="stat-label">Total Revenue</div>
+                        <div class="stat-value" id="totalRevenue">Rs 0.00</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i data-feather="shopping-cart"></i>
+                    </div>
+
+                    <div>
+                        <div class="stat-label">Total Orders</div>
+                        <div class="stat-value" id="totalOrders">0</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i data-feather="book"></i>
+                    </div>
+
+                    <div>
+                        <div class="stat-label">Total Books</div>
+                        <div class="stat-value" id="totalBooks">0</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i data-feather="users"></i>
+                    </div>
+
+                    <div>
+                        <div class="stat-label">Total Users</div>
+                        <div class="stat-value" id="totalUsers">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Recent Orders</h2>
+                    <button class="btn-primary-custom" onclick="showSection('orders')">
+                        View All
+                        <i data-feather="arrow-right"></i>
+                    </button>
+                </div>
+                <table class="admin-table" id="latestOrdersTable">
+                    <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Date / Time</th>
+                        <th>Books</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="latestOrdersBody">
+                    <tr>
+                        <td colspan="7" class="text-center">
+                            Loading orders...
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Books Section -->
+        <div id="booksSection" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Manage Books</h2>
+                    <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <i data-feather="plus"></i>
+                        Add New Book
+                    </button>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <div class="search-box">
+                        <i data-feather="search" class="search-icon"></i>
+                        <input type="text" class="search-input" placeholder="Search books...">
+                    </div>
+                </div>
+
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=100&h=150&fit=crop"
+                                     class="product-image">
+                                <div class="product-info">
+                                    <div class="product-name">The Midnight Library</div>
+                                    <div class="product-author">Matt Haig</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Fiction</td>
+                        <td style="font-weight: 700; color: #667eea;">$12.99</td>
+                        <td>145</td>
+                        <td><span class="badge badge-success">Active</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                                <button class="btn-icon btn-delete"><i data-feather="trash-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=100&h=150&fit=crop"
+                                     class="product-image">
+                                <div class="product-info">
+                                    <div class="product-name">Atomic Habits</div>
+                                    <div class="product-author">James Clear</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Self-Help</td>
+                        <td style="font-weight: 700; color: #667eea;">$14.99</td>
+                        <td>89</td>
+                        <td><span class="badge badge-success">Active</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                                <button class="btn-icon btn-delete"><i data-feather="trash-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                <img src="https://images.unsplash.com/photo-1535905557558-afc4877a26fc?w=100&h=150&fit=crop"
+                                     class="product-image">
+                                <div class="product-info">
+                                    <div class="product-name">Educated</div>
+                                    <div class="product-author">Tara Westover</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Biography</td>
+                        <td style="font-weight: 700; color: #667eea;">$16.99</td>
+                        <td>67</td>
+                        <td><span class="badge badge-success">Active</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                                <button class="btn-icon btn-delete"><i data-feather="trash-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Authors Section -->
+        <div id="authorsSection" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Manage Authors</h2>
+                    <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#exampleModal1">
+                        <i data-feather="plus"></i>
+                        Add New Author
+                    </button>
+                </div>
+
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Books</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td style="font-weight: 700;">Matt Haig</td>
+                        <td>12</td>
+                        <td style="font-weight: 700; color: #667eea;">$1,245</td>
+                        <td><span class="badge badge-success">Active</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                                <button class="btn-icon btn-delete"><i data-feather="trash-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">James Clear</td>
+                        <td>5</td>
+                        <td style="font-weight: 700; color: #667eea;">$2,890</td>
+                        <td><span class="badge badge-success">Active</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                                <button class="btn-icon btn-delete"><i data-feather="trash-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">Tara Westover</td>
+                        <td>3</td>
+                        <td style="font-weight: 700; color: #667eea;">$1,678</td>
+                        <td><span class="badge badge-success">Active</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                                <button class="btn-icon btn-delete"><i data-feather="trash-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Categories Section -->
+        <div id="categoriesSection" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Manage Categories</h2>
+                    <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+                        <i data-feather="plus"></i>
+                        Add New Category
+                    </button>
+                </div>
+
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Category Name</th>
+                        <th>Books Count</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td style="font-weight: 700;">Fiction</td>
+                        <td>234</td>
+                        <td><span class="badge badge-success">Active</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                                <button class="btn-icon btn-delete"><i data-feather="trash-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">Self-Help</td>
+                        <td>189</td>
+                        <td><span class="badge badge-success">Active</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                                <button class="btn-icon btn-delete"><i data-feather="trash-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">Biography</td>
+                        <td>156</td>
+                        <td><span class="badge badge-success">Active</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                                <button class="btn-icon btn-delete"><i data-feather="trash-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">Science Fiction</td>
+                        <td>203</td>
+                        <td><span class="badge badge-success">Active</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                                <button class="btn-icon btn-delete"><i data-feather="trash-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Orders Section -->
+        <div id="ordersSection" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Manage Orders</h2>
+                    <select class="form-select" style="width: auto;">
+                        <option>All Orders</option>
+                        <option>Processing</option>
+                        <option>Shipped</option>
+                        <option>Delivered</option>
+                        <option>Cancelled</option>
+                    </select>
+                </div>
+
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td style="font-weight: 600;">#BKW-142</td>
+                        <td>John Doe</td>
+                        <td>Nov 22, 2025</td>
+                        <td>3</td>
+                        <td style="font-weight: 700; color: #667eea;">$50.58</td>
+                        <td><span class="badge badge-warning">Processing</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="eye"></i></button>
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600;">#BKW-141</td>
+                        <td>Jane Smith</td>
+                        <td>Nov 21, 2025</td>
+                        <td>2</td>
+                        <td style="font-weight: 700; color: #667eea;">$78.90</td>
+                        <td><span class="badge badge-success">Delivered</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="eye"></i></button>
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600;">#BKW-140</td>
+                        <td>Mike Johnson</td>
+                        <td>Nov 20, 2025</td>
+                        <td>5</td>
+                        <td style="font-weight: 700; color: #667eea;">$112.45</td>
+                        <td><span class="badge badge-warning">Shipped</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="eye"></i></button>
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600;">#BKW-139</td>
+                        <td>Sarah Williams</td>
+                        <td>Nov 19, 2025</td>
+                        <td>1</td>
+                        <td style="font-weight: 700; color: #667eea;">$24.99</td>
+                        <td><span class="badge badge-success">Delivered</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="eye"></i></button>
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600;">#BKW-138</td>
+                        <td>Robert Brown</td>
+                        <td>Nov 18, 2025</td>
+                        <td>4</td>
+                        <td style="font-weight: 700; color: #667eea;">$89.50</td>
+                        <td><span class="badge badge-danger">Cancelled</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="eye"></i></button>
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Customers Section -->
+        <div id="customersSection" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Manage Customers</h2>
+                    <div class="search-box">
+                        <i data-feather="search" class="search-icon"></i>
+                        <input type="text" class="search-input" placeholder="Search customers...">
+                    </div>
+                </div>
+
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Orders</th>
+                        <th>Total Spent</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td style="font-weight: 700;">John Doe</td>
+                        <td>john@example.com</td>
+                        <td>24</td>
+                        <td style="font-weight: 700; color: #667eea;">$1,245.80</td>
+                        <td>Jan 15, 2024</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="eye"></i></button>
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                                <button class="btn-icon btn-delete"><i data-feather="trash-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">Jane Smith</td>
+                        <td>jane@example.com</td>
+                        <td>18</td>
+                        <td style="font-weight: 700; color: #667eea;">$892.50</td>
+                        <td>Mar 22, 2024</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="eye"></i></button>
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                                <button class="btn-icon btn-delete"><i data-feather="trash-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">Mike Johnson</td>
+                        <td>mike@example.com</td>
+                        <td>32</td>
+                        <td style="font-weight: 700; color: #667eea;">$2,105.25</td>
+                        <td>Feb 10, 2024</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="eye"></i></button>
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                                <button class="btn-icon btn-delete"><i data-feather="trash-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Stock Management Section -->
+        <div id="stockSection" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Stock Management</h2>
+                    <button class="btn-primary-custom">
+                        <i data-feather="download"></i>
+                        Export Report
+                    </button>
+                </div>
+
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>SKU</th>
+                        <th>Current Stock</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=100&h=150&fit=crop"
+                                     class="product-image">
+                                <div class="product-info">
+                                    <div class="product-name">The Midnight Library</div>
+                                    <div class="product-author">Matt Haig</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="font-weight: 600;">BK-001</td>
+                        <td style="font-weight: 700;">145</td>
+                        <td><span class="badge badge-success">In Stock</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=100&h=150&fit=crop"
+                                     class="product-image">
+                                <div class="product-info">
+                                    <div class="product-name">Atomic Habits</div>
+                                    <div class="product-author">James Clear</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="font-weight: 600;">BK-002</td>
+                        <td style="font-weight: 700; color: #f59e0b;">8</td>
+                        <td><span class="badge badge-warning">Low Stock</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                <img src="https://images.unsplash.com/photo-1535905557558-afc4877a26fc?w=100&h=150&fit=crop"
+                                     class="product-image">
+                                <div class="product-info">
+                                    <div class="product-name">Educated</div>
+                                    <div class="product-author">Tara Westover</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="font-weight: 600;">BK-003</td>
+                        <td style="font-weight: 700; color: #f56565;">0</td>
+                        <td><span class="badge badge-danger">Out of Stock</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Coupons Section -->
+        <div id="couponsSection" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Manage Coupons</h2>
+                    <button class="btn-primary-custom">
+                        <i data-feather="plus"></i>
+                        Create Coupon
+                    </button>
+                </div>
+
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Discount</th>
+                        <th>Used</th>
+                        <th>Expiry Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td style="font-weight: 700;">SAVE20</td>
+                        <td>20% Off</td>
+                        <td>145/500</td>
+                        <td>Dec 31, 2025</td>
+                        <td><span class="badge badge-success">Active</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                                <button class="btn-icon btn-delete"><i data-feather="trash-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">WELCOME10</td>
+                        <td>$10 Off</td>
+                        <td>89/1000</td>
+                        <td>Nov 30, 2025</td>
+                        <td><span class="badge badge-success">Active</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                                <button class="btn-icon btn-delete"><i data-feather="trash-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">SUMMER25</td>
+                        <td>25% Off</td>
+                        <td>200/200</td>
+                        <td>Sep 30, 2025</td>
+                        <td><span class="badge badge-danger">Expired</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit"><i data-feather="edit-2"></i></button>
+                                <button class="btn-icon btn-delete"><i data-feather="trash-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settingsSection" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Site Settings</h2>
+                </div>
+
+                <form>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Site Name</label>
+                            <input type="text" class="form-control" value="BookWorm Haven">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Contact Email</label>
+                            <input type="email" class="form-control" value="support@bookwormhaven.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Contact Phone</label>
+                            <input type="tel" class="form-control" value="(555) 123-4567">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Currency</label>
+                            <select class="form-select">
+                                <option>USD ($)</option>
+                                <option>EUR (€)</option>
+                                <option>GBP (£)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Tax Rate (%)</label>
+                            <input type="number" class="form-control" value="8.5">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Free Shipping Threshold</label>
+                            <input type="number" class="form-control" value="35">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Site Description</label>
+                            <textarea class="form-control" rows="3">Find your next favorite read at BookWorm Haven. Thousands of books across all genres.</textarea>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="maintenance" checked>
+                                <label class="form-check-label" for="maintenance">
+                                    Enable email notifications for new orders
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="reviews" checked>
+                                <label class="form-check-label" for="reviews">
+                                    Allow customer reviews
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn-primary-custom">
+                                <i data-feather="save"></i>
+                                Save Settings
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+
+<!--Add New Book Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add New Book</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="col-form-label">Book Name:</label>
+                        <input type="text" class="form-control" id="bookName">
+                    </div>
+                    <div class="mb-3">
+                        <label class="col-form-label">Author:</label>
+                        <select class="form-control" id="authors"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="col-form-label">Category Name:</label>
+                        <select class="form-control" id="category">
+                            <option value="0">Select</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-6">
+                                <label class="col-form-label">Price:</label>
+                                <input type="number" class="form-control" id="price">
+                            </div>
+                            <div class="col-6">
+                                <label class="col-form-label">Qty:</label>
+                                <input type="number" class="form-control" id="qty">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="col-form-label">Description:</label>
+                        <textarea class="form-control" id="description"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <div class="mb-3">
+                            <label for="imageUpload" class="form-label">Upload Image</label>
+                            <input class="form-control" type="file" id="imageUpload" accept="image/*">
+
+                            <!-- Preview -->
+                            <div class="mt-3">
+                                <img id="previewImg" src="" alt="Image preview"
+                                     style="max-width: 100%; height: auto; display: none; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+                            </div>
+
+                        </div>
+
+                        <script>
+                            const input = document.getElementById("imageUpload");
+                            const preview = document.getElementById("previewImg");
+
+                            input.addEventListener("change", () => {
+                                const file = input.files[0];
+                                if (file) {
+                                    preview.src = URL.createObjectURL(file);
+                                    preview.style.display = "block";
+                                } else {
+                                    preview.src = "";
+                                    preview.style.display = "none";
+                                }
+                            });
+                        </script>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="submitBtn" onclick="saveProduct()">Add New Book</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Add New Author Modal -->
+<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel1">Add New Author</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="col-form-label">Author Name:</label>
+                        <input type="text" class="form-control" id="authorName">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="addNewAuthor()">Save New Author</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Author Modal -->
+<div class="modal fade" id="editAuthorModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Author</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editAuthorId">
+                <div class="mb-3">
+                    <label for="editAuthorName" class="form-label">Author Name</label>
+                    <input type="text" class="form-control" id="editAuthorName" maxlength="150" autocomplete="off">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="updateAuthor()">Update Author</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Category Modal -->
+<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editCategoryId">
+                <div class="mb-3">
+                    <label for="editCategoryName" class="form-label">Category Name</label>
+                    <input type="text" class="form-control" id="editCategoryName" maxlength="150" autocomplete="off">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="updateCategory()">Update Category</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Add New Category Modal -->
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel2">Add New Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="col-form-label">Category Name:</label>
+                        <input type="text" class="form-control" id="categoryName">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="addNewCategory()">Save New Category</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/productListing.js"></script>
+<script src="assets/js/notiflix-aio-3.2.8.min.js"></script>
+
+
+<script>
+    feather.replace();
+
+    function showSection(section) {
+        const sections = ['dashboard', 'books', 'authors', 'categories', 'orders', 'customers', 'stock', 'coupons', 'settings'];
+        sections.forEach(s => {
+            const el = document.getElementById(s + 'Section');
+            if (el) el.style.display = 'none';
+        });
+
+        document.querySelectorAll('.sidebar-menu a').forEach(link => {
+            link.classList.remove('active');
+        });
+
+        const targetSection = document.getElementById(section + 'Section');
+        if (targetSection) {
+            targetSection.style.display = 'block';
+        }
+
+        const titles = {
+            'dashboard': 'Dashboard',
+            'books': 'Manage Books',
+            'authors': 'Manage Authors',
+            'categories': 'Manage Categories',
+            'orders': 'Manage Orders',
+            'customers': 'Manage Customers',
+            'stock': 'Stock Management',
+            'coupons': 'Manage Coupons',
+            'settings': 'Settings'
+        };
+        document.querySelector('.topbar-title').textContent = titles[section] || 'Dashboard';
+
+        event.target.closest('a').classList.add('active');
+
+        feather.replace();
+    }
+
+    function toggleSidebar() {
+        document.getElementById('adminSidebar').classList.toggle('active');
+    }
+
+    document.addEventListener('click', function (event) {
+        const sidebar = document.getElementById('adminSidebar');
+        const menuBtn = document.querySelector('.mobile-menu-btn');
+
+        if (window.innerWidth <= 991 && sidebar.classList.contains('active')) {
+            if (!sidebar.contains(event.target) && !menuBtn.contains(event.target)) {
+                sidebar.classList.remove('active');
+            }
+        }
+    });
+</script>
+</body>
+</html>

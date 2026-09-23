@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - FindABook</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+        :root {
+            --ink: #17231b;
+            --forest: #35513f;
+            --forest-light: #4a6b54;
+            --brass: #b8863b;
+            --brass-light: #d4a45c;
+            --paper: #f7f2e7;
+            --paper-white: #fffdf8;
+            --text: #232921;
+            --muted: #6f7566;
+            --line: #e4dcc9;
+            --success: #3f8a5e;
+            --danger: #b5533f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--paper);
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Fraunces', serif;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 253, 248, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 24px rgba(23, 35, 27, 0.06);
+            padding: 18px 0;
+        }
+
+        .navbar-brand {
+            font-family: 'Fraunces', serif;
+            font-weight: 700;
+            color: var(--ink);
+            font-size: 1.6rem;
+        }
+
+        /* Progress Steps */
+        .checkout-progress {
+            background: var(--paper-white);
+            padding: 32px 0;
+            box-shadow: 0 4px 18px rgba(23, 35, 27, 0.06);
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .step-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--line);
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .progress-step.active .step-circle {
+            background: var(--forest);
+            color: white;
+        }
+
+        .progress-step.completed .step-circle {
+            background: var(--success);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--muted);
+        }
+
+        .progress-step.active .step-label {
+            color: var(--forest);
+        }
+
+        .step-line {
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            width: 100%;
+            height: 3px;
+            background: var(--line);
+            z-index: 1;
+        }
+
+        .progress-step.completed .step-line {
+            background: var(--success);
+        }
+
+        .progress-step:last-child .step-line {
+            display: none;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 40px 0;
+        }
+
+        /* Section Styles */
+        .checkout-section {
+            background: var(--paper-white);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 8px 26px rgba(23, 35, 27, 0.06);
+            margin-bottom: 24px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-number {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--forest);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+        }
+
+        /* Saved Addresses */
+        .saved-addresses {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .address-card {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .address-card:hover {
+            border-color: var(--brass);
+            background: var(--paper);
+        }
+
+        .address-card.selected {
+            border-color: var(--forest);
+            background: #eef2ef;
+        }
+
+        .address-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--forest);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .address-name {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--ink);
+        }
+
+        .address-details {
+            color: var(--text);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .address-actions {
+            margin-top: 12px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .address-action-btn {
+            color: var(--forest);
+            background: transparent;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-add-address {
+            border: 2px dashed var(--brass-light);
+            border-radius: 12px;
+            padding: 40px 20px;
+            background: transparent;
+            color: var(--forest);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-add-address:hover {
+            background: var(--paper);
+        }
+
+        /* Form Styles */
+        .form-label {
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-control, .form-select {
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            background: var(--paper);
+            color: var(--text);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--brass);
+            box-shadow: 0 0 0 3px rgba(184, 134, 59, 0.15);
+            background: var(--paper-white);
+        }
+
+        /* Payment Methods */
+        .payment-methods {
+            display: grid;
+            gap: 16px;
+        }
+
+        .payment-option {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-option:hover {
+            border-color: var(--brass);
+            background: var(--paper);
+        }
+
+        .payment-option.selected {
+            border-color: var(--forest);
+            background: #eef2ef;
+        }
+
+        .payment-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .payment-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background: var(--paper);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .payment-details {
+            flex: 1;
+        }
+
+        .payment-title {
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+
+        .payment-subtitle {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .payment-form {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--line);
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: var(--paper-white);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 8px 26px rgba(23, 35, 27, 0.06);
+            position: sticky;
+            top: 20px;
+        }
+
+        .summary-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 22px;
+            color: var(--ink);
+        }
+
+        .order-items {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .order-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item-image {
+            width: 60px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .order-item-info {
+            flex: 1;
+        }
+
+        .order-item-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            color: var(--ink);
+        }
+
+        .order-item-qty {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .order-item-price {
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            color: var(--forest);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            color: var(--text);
+        }
+
+        .summary-row.total {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.35rem;
+            font-weight: 700;
+            padding-top: 20px;
+            border-top: 1px solid var(--line);
+            color: var(--ink);
+        }
+
+        .btn-place-order {
+            background: var(--forest);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            width: 100%;
+            margin-top: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-place-order:hover {
+            background: var(--forest-light);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(53, 81, 63, 0.3);
+        }
+
+        .order-guarantee {
+            margin-top: 20px;
+            padding: 16px;
+            background: var(--paper);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: var(--text);
+            text-align: center;
+        }
+
+        .order-guarantee i {
+            color: var(--success);
+            margin-right: 6px;
+        }
+
+        @media (max-width: 991px) {
+            .order-summary {
+                position: static;
+                margin-top: 30px;
+            }
+
+            .progress-steps {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .step-line {
+                width: 3px;
+                height: 100%;
+                top: 50px;
+                left: 25px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .saved-addresses {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="header"></div>
+
+<!-- Progress Steps -->
+<!--    <div class="checkout-progress">-->
+<!--        <div class="container">-->
+<!--            <div class="progress-steps">-->
+<!--                <div class="progress-step completed">-->
+<!--                    <div class="step-circle">✓</div>-->
+<!--                    <div class="step-label">Cart</div>-->
+<!--                    <div class="step-line"></div>-->
+<!--                </div>-->
+<!--                <div class="progress-step active">-->
+<!--                    <div class="step-circle">2</div>-->
+<!--                    <div class="step-label">Checkout</div>-->
+<!--                    <div class="step-line"></div>-->
+<!--                </div>-->
+<!--                <div class="progress-step">-->
+<!--                    <div class="step-circle">3</div>-->
+<!--                    <div class="step-label">Payment</div>-->
+<!--                    <div class="step-line"></div>-->
+<!--                </div>-->
+<!--                <div class="progress-step">-->
+<!--                    <div class="step-circle">4</div>-->
+<!--                    <div class="step-label">Complete</div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!-- Main Content -->
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <!-- Checkout Form -->
+            <div class="col-lg-8">
+                <!-- Shipping Address -->
+                <div class="checkout-section">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <span class="section-number">1</span>
+                            Shipping Address
+                        </div>
+                    </div>
+
+                    <!-- Saved Addresses -->
+                    <div class="saved-addresses">
+                        <div class="address-card selected" onclick="selectAddress(this)">
+                            <div class="address-badge">Default</div>
+                            <div class="address-name">Home</div>
+                            <div class="address-details">
+                                John Doe<br>
+                                123 Main Street, Apt 4B<br>
+                                New York, NY 10001<br>
+                                Phone: (555) 123-4567
+                            </div>
+                            <div class="address-actions">
+                                <button class="address-action-btn">
+                                    <i data-feather="edit-2"></i>
+                                    Edit
+                                </button>
+                                <button class="address-action-btn" style="color: var(--danger);">
+                                    <i data-feather="trash-2"></i>
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+
+                        <!--                            <div class="address-card" onclick="selectAddress(this)">-->
+                        <!--                                <div class="address-name">Office</div>-->
+                        <!--                                <div class="address-details">-->
+                        <!--                                    John Doe<br>-->
+                        <!--                                    456 Business Ave, Suite 200<br>-->
+                        <!--                                    New York, NY 10002<br>-->
+                        <!--                                    Phone: (555) 987-6543-->
+                        <!--                                </div>-->
+                        <!--                                <div class="address-actions">-->
+                        <!--                                    <button class="address-action-btn">-->
+                        <!--                                        <i data-feather="edit-2"></i>-->
+                        <!--                                        Edit-->
+                        <!--                                    </button>-->
+                        <!--                                    <button class="address-action-btn" style="color: #f56565;">-->
+                        <!--                                        <i data-feather="trash-2"></i>-->
+                        <!--                                        Delete-->
+                        <!--                                    </button>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+
+                        <button class="btn-add-address" onclick="toggleAddressForm()">
+                            <i data-feather="plus-circle" style="width: 32px; height: 32px;"></i>
+                            Add New Address
+                        </button>
+                    </div>
+
+                    <!-- New Address Form -->
+                    <div id="addressForm" style="display: none; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--line);">
+                        <h5 style="font-weight: 600; margin-bottom: 20px;">Add New Address</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-control" placeholder="John">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" class="form-control" placeholder="Doe">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Address Line 1</label>
+                                <input type="text" class="form-control" placeholder="Street address">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Address Line 2 (Optional)</label>
+                                <input type="text" class="form-control" placeholder="Apartment, suite, unit, etc.">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">City</label>
+                                <input type="text" class="form-control" placeholder="New York">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">State</label>
+                                <select class="form-select">
+                                    <option>NY</option>
+                                    <option>CA</option>
+                                    <option>TX</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">ZIP Code</label>
+                                <input type="text" class="form-control" placeholder="10001">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phone</label>
+                                <input type="tel" class="form-control" placeholder="(555) 123-4567">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Label (Optional)</label>
+                                <input type="text" class="form-control" placeholder="e.g., Home, Office">
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="setDefault">
+                                    <label class="form-check-label" for="setDefault">
+                                        Set as default address
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button class="btn btn-primary" style="background: var(--forest); border: none; padding: 10px 24px; border-radius: 8px;">
+                                    Save Address
+                                </button>
+                                <button class="btn btn-outline-secondary" onclick="toggleAddressForm()" style="margin-left: 12px; padding: 10px 24px; border-radius: 8px;">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Method -->
+                <!--                    <div class="checkout-section">-->
+                <!--                        <div class="section-header">-->
+                <!--                            <div class="section-title">-->
+                <!--                                <span class="section-number">2</span>-->
+                <!--                                Payment Method-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+
+                <!--                        <div class="payment-methods">-->
+                <!--                            &lt;!&ndash; Credit Card &ndash;&gt;-->
+                <!--                            <div class="payment-option selected" onclick="selectPayment(this, 'card')">-->
+                <!--                                <div class="payment-header">-->
+                <!--                                    <div class="payment-icon">-->
+                <!--                                        <i data-feather="credit-card" style="color: #667eea;"></i>-->
+                <!--                                    </div>-->
+                <!--                                    <div class="payment-details">-->
+                <!--                                        <div class="payment-title">Credit / Debit Card</div>-->
+                <!--                                        <div class="payment-subtitle">Pay with Visa, Mastercard, Amex</div>-->
+                <!--                                    </div>-->
+                <!--                                    <input type="radio" name="payment" checked>-->
+                <!--                                </div>-->
+                <!--                                <div class="payment-form" id="cardForm">-->
+                <!--                                    <div class="row g-3">-->
+                <!--                                        <div class="col-12">-->
+                <!--                                            <label class="form-label">Card Number</label>-->
+                <!--                                            <input type="text" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19">-->
+                <!--                                        </div>-->
+                <!--                                        <div class="col-md-8">-->
+                <!--                                            <label class="form-label">Cardholder Name</label>-->
+                <!--                                            <input type="text" class="form-control" placeholder="John Doe">-->
+                <!--                                        </div>-->
+                <!--                                        <div class="col-md-4">-->
+                <!--                                            <label class="form-label">Expiry Date</label>-->
+                <!--                                            <input type="text" class="form-control" placeholder="MM/YY" maxlength="5">-->
+                <!--                                        </div>-->
+                <!--                                        <div class="col-md-4">-->
+                <!--                                            <label class="form-label">CVV</label>-->
+                <!--                                            <input type="text" class="form-control" placeholder="123" maxlength="3">-->
+                <!--                                        </div>-->
+                <!--                                        <div class="col-12">-->
+                <!--                                            <div class="form-check">-->
+                <!--                                                <input class="form-check-input" type="checkbox" id="saveCard">-->
+                <!--                                                <label class="form-check-label" for="saveCard">-->
+                <!--                                                    Save this card for future purchases-->
+                <!--                                                </label>-->
+                <!--                                            </div>-->
+                <!--                                        </div>-->
+                <!--                                    </div>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+
+                <!--                            &lt;!&ndash; PayPal &ndash;&gt;-->
+                <!--                            <div class="payment-option" onclick="selectPayment(this, 'paypal')">-->
+                <!--                                <div class="payment-header">-->
+                <!--                                    <div class="payment-icon">-->
+                <!--                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="#003087">-->
+                <!--                                            <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106z"/>-->
+                <!--                                        </svg>-->
+                <!--                                    </div>-->
+                <!--                                    <div class="payment-details">-->
+                <!--                                        <div class="payment-title">PayPal</div>-->
+                <!--                                        <div class="payment-subtitle">Pay securely with PayPal</div>-->
+                <!--                                    </div>-->
+                <!--                                    <input type="radio" name="payment">-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+
+                <!--                            &lt;!&ndash; Cash on Delivery &ndash;&gt;-->
+                <!--                            <div class="payment-option" onclick="selectPayment(this, 'cod')">-->
+                <!--                                <div class="payment-header">-->
+                <!--                                    <div class="payment-icon">-->
+                <!--                                        <i data-feather="dollar-sign" style="color: #667eea;"></i>-->
+                <!--                                    </div>-->
+                <!--                                    <div class="payment-details">-->
+                <!--                                        <div class="payment-title">Cash on Delivery</div>-->
+                <!--                                        <div class="payment-subtitle">Pay when you receive</div>-->
+                <!--                                    </div>-->
+                <!--                                    <input type="radio" name="payment">-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+
+                <!-- Review Order -->
+                <!--                    <div class="checkout-section">-->
+                <!--                        <div class="section-header">-->
+                <!--                            <div class="section-title">-->
+                <!--                                <span class="section-number">3</span>-->
+                <!--                                Review Order-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                        <div style="color: #4a5568; line-height: 1.7;">-->
+                <!--                            <div class="form-check mb-3">-->
+                <!--                                <input class="form-check-input" type="checkbox" id="terms" required>-->
+                <!--                                <label class="form-check-label" for="terms">-->
+                <!--                                    I agree to the <a href="#" style="color: #667eea; font-weight: 600;">Terms and Conditions</a> and <a href="#" style="color: #667eea; font-weight: 600;">Privacy Policy</a>-->
+                <!--                                </label>-->
+                <!--                            </div>-->
+                <!--                            <div class="form-check">-->
+                <!--                                <input class="form-check-input" type="checkbox" id="newsletter">-->
+                <!--                                <label class="form-check-label" for="newsletter">-->
+                <!--                                    Send me news and updates about new books and offers-->
+                <!--                                </label>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+            </div>
+
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="order-summary">
+                    <div class="summary-title">Order Summary</div>
+
+                    <div class="order-items">
+                        <div class="order-item">
+                            <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=100&h=150&fit=crop" alt="Book" class="order-item-image">
+                            <div class="order-item-info">
+                                <div class="order-item-title">The Midnight Library</div>
+                                <div class="order-item-qty">Qty: 1</div>
+                            </div>
+                            <div class="order-item-price">$12.99</div>
+                        </div>
+
+                        <div class="order-item">
+                            <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=100&h=150&fit=crop" alt="Book" class="order-item-image">
+                            <div class="order-item-info">
+                                <div class="order-item-title">Atomic Habits</div>
+                                <div class="order-item-qty">Qty: 2</div>
+                            </div>
+                            <div class="order-item-price">$29.98</div>
+                        </div>
+
+                        <div class="order-item">
+                            <img src="https://images.unsplash.com/photo-1535905557558-afc4877a26fc?w=100&h=150&fit=crop" alt="Book" class="order-item-image">
+                            <div class="order-item-info">
+                                <div class="order-item-title">Educated</div>
+                                <div class="order-item-qty">Qty: 1</div>
+                            </div>
+                            <div class="order-item-price">$13.49</div>
+                        </div>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span style="font-weight: 600;">$56.46</span>
+                    </div>
+
+                    <div class="summary-row" style="color: var(--success);">
+                        <span>Discount</span>
+                        <span style="font-weight: 600;">-$10.00</span>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span style="font-weight: 600; color: var(--success);">FREE</span>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Tax</span>
+                        <span style="font-weight: 600;">$4.12</span>
+                    </div>
+
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span>$50.58</span>
+                    </div>
+
+                    <button class="btn-place-order" onclick="window.location.href='order-confirmation.html'">
+                        Place Order
+                    </button>
+
+                    <div class="order-guarantee">
+                        <i data-feather="shield"></i>
+                        100% Secure Checkout<br>
+                        <small>SSL Encrypted</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="assets/js/header.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    feather.replace();
+
+    function selectAddress(element) {
+        document.querySelectorAll('.address-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        element.classList.add('selected');
+    }
+
+    function toggleAddressForm() {
+        const form = document.getElementById('addressForm');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function selectPayment(element, type) {
+        document.querySelectorAll('.payment-option').forEach(option => {
+            option.classList.remove('selected');
+            option.querySelector('input[type="radio"]').checked = false;
+        });
+        element.classList.add('selected');
+        element.querySelector('input[type="radio"]').checked = true;
+
+        // Hide all payment forms
+        document.querySelectorAll('.payment-form').forEach(form => {
+            form.style.display = 'none';
+        });
+
+        // Show selected payment form
+        if(type === 'card') {
+            document.getElementById('cardForm').style.display = 'block';
+        }
+    }
+</script>
+<script src="../../assets/js/notiflix-aio-3.2.8.min.js"></script>
+</body>
+</html>

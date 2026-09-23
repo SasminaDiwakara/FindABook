@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - FindABook</title>
+    <link rel="icon" href="assets/images/findabookLogo.png">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+        :root {
+            --ink: #17231b;
+            --ink-soft: #26362b;
+            --forest: #35513f;
+            --forest-light: #4a6b54;
+            --brass: #b8863b;
+            --brass-light: #d4a45c;
+            --paper: #f7f2e7;
+            --paper-white: #fffdf8;
+            --text: #232921;
+            --muted: #6f7566;
+            --line: #e4dcc9;
+            --danger: #b5533f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--paper);
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Fraunces', serif;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 253, 248, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 24px rgba(23, 35, 27, 0.06);
+            padding: 18px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-family: 'Fraunces', serif;
+            font-weight: 700;
+            color: var(--ink);
+            font-size: 1.6rem;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: var(--ink);
+            padding: 40px 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                    radial-gradient(circle at 10% 20%, rgba(184, 134, 59, 0.18) 0%, transparent 45%),
+                    radial-gradient(circle at 90% 90%, rgba(74, 107, 84, 0.4) 0%, transparent 50%);
+        }
+
+        .page-header .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .modal-header {
+            background: var(--ink);
+            color: white;
+            font-weight: bold;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--paper-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--forest);
+            border: 4px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-details h1 {
+            font-size: 1.9rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .user-details p {
+            opacity: 0.85;
+            margin: 0;
+            color: #cfd6c9;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 40px 0;
+        }
+
+        /* Sidebar */
+        .dashboard-sidebar {
+            background: var(--paper-white);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 8px 26px rgba(23, 35, 27, 0.06);
+            position: sticky;
+            top: 100px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 6px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 16px;
+            border-radius: 10px;
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-menu a:hover {
+            background: var(--paper);
+            color: var(--forest);
+        }
+
+        .sidebar-menu a.active {
+            background: var(--forest);
+            color: white;
+        }
+
+        .sidebar-menu a i {
+            width: 20px;
+            height: 20px;
+        }
+
+        .logout-btn {
+            margin-top: 20px;
+            color: var(--danger) !important;
+        }
+
+        .logout-btn:hover {
+            background: rgba(181, 83, 63, 0.1) !important;
+        }
+
+        /* Dashboard Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--paper-white);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 26px;
+            box-shadow: 0 8px 26px rgba(23, 35, 27, 0.06);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(184, 134, 59, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 34px rgba(23, 35, 27, 0.14);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--forest);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-icon i {
+            color: white;
+            width: 22px;
+            height: 22px;
+        }
+
+        .stat-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.9rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--forest);
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Content Section */
+        .content-section {
+            background: var(--paper-white);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 8px 26px rgba(23, 35, 27, 0.06);
+            margin-bottom: 24px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .btn-view-all {
+            color: var(--forest);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-view-all:hover {
+            gap: 10px;
+            color: var(--brass);
+        }
+
+        /* Order Item */
+        .order-item {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .order-item:hover {
+            border-color: var(--brass);
+            background: var(--paper);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .order-id {
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--ink);
+        }
+
+        .order-date {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .order-status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .status-processing {
+            background: #f2ddc0;
+            color: #8a5a19;
+        }
+
+        .status-packing {
+            background: #eef0bd;
+            color: #6c6d1c;
+        }
+
+        .status-shipping {
+            background: #e2cdea;
+            color: #7c3f8f;
+        }
+
+        .status-delivered {
+            background: #cdece4;
+            color: #1c6a5c;
+        }
+
+        .status-received {
+            background: #d3ecc4;
+            color: #4a7a2b;
+        }
+
+        .order-products {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+        }
+
+        .product-thumb {
+            width: 60px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid var(--line);
+        }
+
+        .order-total {
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--forest);
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            background: var(--paper-white);
+            color: var(--text);
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-action:hover {
+            border-color: var(--forest);
+            color: var(--forest);
+        }
+
+        /* Address Card */
+        .address-card {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .address-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--forest);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .address-name {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--ink);
+        }
+
+        .address-details {
+            color: var(--text);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .address-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .address-action-btn {
+            color: var(--forest);
+            background: transparent;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .address-action-btn:hover {
+            color: var(--brass);
+        }
+
+        .address-action-btn.delete {
+            color: var(--danger);
+        }
+
+        .address-action-btn.delete:hover {
+            color: #8a3d2c;
+        }
+
+        /* Wishlist Item */
+        .wishlist-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .wishlist-item:hover {
+            border-color: var(--brass);
+            background: var(--paper);
+        }
+
+        .wishlist-image {
+            width: 80px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .wishlist-info {
+            flex: 1;
+        }
+
+        .wishlist-title {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+            color: var(--ink);
+        }
+
+        .wishlist-author {
+            color: var(--muted);
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+
+        .wishlist-price {
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--forest);
+            margin-bottom: 12px;
+        }
+
+        .wishlist-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Profile Form */
+        .profile-form .form-label {
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 8px;
+        }
+
+        .profile-form .form-control {
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            background: var(--paper);
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .profile-form .form-control:focus {
+            border-color: var(--brass);
+            box-shadow: 0 0 0 3px rgba(184, 134, 59, 0.15);
+            background: var(--paper-white);
+        }
+
+        .btn-save {
+            background: var(--forest);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-save:hover {
+            background: var(--forest-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(53, 81, 63, 0.3);
+        }
+
+        @media (max-width: 991px) {
+            .dashboard-sidebar {
+                position: static;
+                margin-bottom: 24px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .user-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .order-header {
+                flex-direction: column;
+            }
+
+            .wishlist-item {
+                flex-direction: column;
+            }
+
+            .wishlist-image {
+                width: 100%;
+                height: 200px;
+            }
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+        }
+
+        /* Table */
+        .table thead {
+            background: var(--paper);
+        }
+
+        .table th {
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .total-row {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--forest);
+        }
+
+
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .status-card {
+            background: var(--paper-white);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 22px;
+            text-align: center;
+            box-shadow: 0 8px 26px rgba(23, 35, 27, 0.06);
+            transition: 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 34px rgba(23, 35, 27, 0.12);
+        }
+
+        /* Gradient circle */
+        .status-icon {
+            width: 58px;
+            height: 58px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+        }
+
+        /* Different colors */
+        .processing {
+            background: var(--forest);
+        }
+
+        .packing {
+            background: var(--brass);
+        }
+
+        .shipped {
+            background: #4a7c9e;
+        }
+
+        .out {
+            background: #3f8a7f;
+        }
+
+        .delivered {
+            background: var(--forest-light);
+        }
+
+        .status-title {
+            font-weight: 700;
+            margin-top: 10px;
+            color: var(--ink);
+        }
+
+        .status-active {
+            background: #f3e6cd;
+            transform: scale(102%);
+            box-shadow: 0 15px 34px rgba(184, 134, 59, 0.3);
+        }
+
+        .status-completed{
+            background: #dcece0;
+            transform: scale(98%);
+            box-shadow: 0 2px 10px rgba(74, 107, 84, 0.2);
+        }
+
+        .status-active {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-active::before {
+            content: "";
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(184, 134, 59, 0.18);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            animation: rippleEffect 3s infinite;
+            animation-delay: 1s;
+        }
+
+        /* Ripple circle */
+        .status-active::after {
+            content: "";
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(184, 134, 59, 0.28);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            animation: rippleEffect 2s infinite;
+            z-index: 0;
+        }
+
+        /* Keep content above ripple */
+        .status-active > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Animation */
+        @keyframes rippleEffect {
+            0% {
+                transform: translate(-50%, -60%) scale(0);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translate(-50%, -60%) scale(2.5);
+                opacity: 0.3;
+            }
+            100% {
+                transform: translate(-50%, -60%) scale(4);
+                opacity: 0;
+            }
+        }
+
+        /*animation: rippleEffect 3s infinite ease-out;*/
+
+    </style>
+</head>
+<body>
+
+<div id="header"></div>
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="user-info">
+            <!--            <div class="user-avatar">JD</div>-->
+            <div class="user-details">
+                <h1 id="username"></h1>
+                <p>Manage your account and track your orders</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="dashboard-sidebar">
+                    <ul class="sidebar-menu">
+                        <li><a href="#" class="active" onclick="showSection('overview')">
+                            <i data-feather="home"></i> Dashboard
+                        </a></li>
+                        <li><a href="#" onclick="showSection('orders')">
+                            <i data-feather="package"></i> My Orders
+                        </a></li>
+                        <li><a href="#" onclick="showSection('wishlist')">
+                            <i data-feather="heart"></i> Wishlist
+                        </a></li>
+                        <!--                        <li><a href="#" onclick="showSection('addresses')">-->
+                        <!--                            <i data-feather="map-pin"></i> Addresses-->
+                        <!--                        </a></li>-->
+                        <li><a href="#" onclick="showSection('profile')">
+                            <i data-feather="user"></i> Profile
+                        </a></li>
+                        <li><a href="#" onclick="signOut()" class="logout-btn">
+                            <i data-feather="log-out"></i> Logout
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="col-lg-9">
+                <!-- Overview Section -->
+                <div id="overviewSection">
+                    <!-- Stats Grid -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i data-feather="shopping-bag"></i>
+                            </div>
+                            <div class="stat-value" id="order_qty">**</div>
+                            <div class="stat-label" >Total Orders</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i data-feather="clock"></i>
+                            </div>
+                            <div class="stat-value" id="pending_ord">**</div>
+                            <div class="stat-label">Pending Orders</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i data-feather="heart"></i>
+                            </div>
+                            <div class="stat-value" id="wishlist_qty">**</div>
+                            <div class="stat-label">Wishlist Items</div>
+                        </div>
+
+                        <!-- <div class="stat-card">
+                            <div class="stat-icon">
+                                <i data-feather="award"></i>
+                            </div>
+                            <div class="stat-value">850</div>
+                            <div class="stat-label">Reward Points</div>
+                        </div> -->
+                    </div>
+
+                    <!-- Recent Orders -->
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Recent Orders</h2>
+                            <a href="#" class="btn-view-all" onclick="showSection('orders')">
+                                View All <i data-feather="arrow-right"></i>
+                            </a>
+                        </div>
+
+                        <div id="recentOrders">
+
+                        </div>
+
+                        <!--                        <div class="order-item">-->
+                        <!--                            <div class="order-header">-->
+                        <!--                                <div>-->
+                        <!--                                    <div class="order-id">#BKW-2025-00142</div>-->
+                        <!--                                    <div class="order-date">Ordered on Nov 22, 2025</div>-->
+                        <!--                                </div>-->
+                        <!--                                <span class="order-status status-processing">Processing</span>-->
+                        <!--                            </div>-->
+                        <!--                            <div class="order-products">-->
+                        <!--                                <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=100&h=150&fit=crop"-->
+                        <!--                                     class="product-thumb">-->
+                        <!--                                <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=100&h=150&fit=crop"-->
+                        <!--                                     class="product-thumb">-->
+                        <!--                                <img src="https://images.unsplash.com/photo-1535905557558-afc4877a26fc?w=100&h=150&fit=crop"-->
+                        <!--                                     class="product-thumb">-->
+                        <!--                            </div>-->
+                        <!--                            <div class="order-footer">-->
+                        <!--                                <div class="order-total">Total: $50.58</div>-->
+                        <!--                                <div class="order-actions">-->
+                        <!--                                    <button class="btn-action">Track Order</button>-->
+                        <!--                                    <button class="btn-action">View Details</button>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
+                    </div>
+                </div>
+
+                <!-- Orders Section -->
+                <div id="ordersSection" style="display: none;">
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h2 class="section-title">My Orders</h2>
+                            <select class="form-select" style="width: auto;">
+                                <option>All Orders</option>
+                                <option>Processing</option>
+                                <option>Shipped</option>
+                                <option>Delivered</option>
+                            </select>
+                        </div>
+
+                        <div id="allOrders" style="height: 80vh;overflow: auto">
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+                <!-- Wishlist Section -->
+                <div id="wishlistSection" style="display: none;">
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h2 class="section-title">My Wishlist</h2>
+                            <span style="color: var(--muted);" id="wishlistCount">***</span>
+                        </div>
+
+
+                        <div id="productCards">
+
+                            <!--                            <div class="wishlist-item">-->
+                            <!--                                <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=150&h=200&fit=crop"-->
+                            <!--                                     class="wishlist-image">-->
+                            <!--                                <div class="wishlist-info">-->
+                            <!--                                    <h3 class="wishlist-title">Sapiens</h3>-->
+                            <!--                                    <div class="wishlist-author">by Yuval Noah Harari</div>-->
+                            <!--                                    <div class="wishlist-price">$15.99</div>-->
+                            <!--                                    <div class="wishlist-actions">-->
+                            <!--                                        <button class="btn-action">Add to Cart</button>-->
+                            <!--                                        <button class="btn-action" style="color: #f56565; border-color: #f56565;">Remove-->
+                            <!--                                        </button>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+
+                            <div class="d-none text-center shadow-md" id="no_items">
+                                <img src="assets/images/no-items.jpg" style="height: 180px;width: 180px" alt="no-items">
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+                <!-- Addresses Section -->
+                <div id="addressesSection" style="display: none;">
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h2 class="section-title">My Addresses</h2>
+                            <button class="btn-action"
+                                    style="background: var(--forest); color: white; border: none;">
+                                <i data-feather="plus"></i> Add New
+                            </button>
+                        </div>
+
+                        <div class="address-card">
+                            <div class="address-badge">Default</div>
+                            <div class="address-name">Home</div>
+                            <div class="address-details">
+                                John Doe<br>
+                                123 Main Street, Apt 4B<br>
+                                New York, NY 10001<br>
+                                Phone: (555) 123-4567
+                            </div>
+                            <div class="address-actions">
+                                <button class="address-action-btn">
+                                    <i data-feather="edit-2"></i> Edit
+                                </button>
+                                <button class="address-action-btn delete">
+                                    <i data-feather="trash-2"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="address-card">
+                            <div class="address-name">Office</div>
+                            <div class="address-details">
+                                John Doe<br>
+                                456 Business Ave, Suite 200<br>
+                                New York, NY 10002<br>
+                                Phone: (555) 987-6543
+                            </div>
+                            <div class="address-actions">
+                                <button class="address-action-btn">
+                                    <i data-feather="edit-2"></i> Edit
+                                </button>
+                                <button class="address-action-btn delete">
+                                    <i data-feather="trash-2"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Section -->
+                <div id="profileSection" style="display: none;">
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Profile Settings</h2>
+                        </div>
+
+                        <form class="profile-form">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="firstName">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" id="lastName">
+                                </div>
+                                <!--                                <div class="col-md-6">-->
+                                <!--                                    <label class="form-label">Email</label>-->
+                                <!--                                    <input type="email" class="form-control" id="">-->
+                                <!--                                </div>-->
+                                <div class="col-md-6">
+                                    <label class="form-label">Phone</label>
+                                    <input type="tel" class="form-control" id="mobile">
+                                </div>
+
+
+                                <h4 style="font-weight: 600; margin-bottom: 20px;">Address</h4>
+                                <hr style="margin: 8px 0;">
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Postal Code</label>
+                                    <input type="text" class="form-control" id="postalCode">
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">City</label>
+                                        <select class="form-control" id="citySelect">
+                                            <option value="0">Select</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Line one</label>
+                                    <input type="text" class="form-control" id="lineOne">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Line two</label>
+                                    <input type="text" class="form-control" id="lineTwo">
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn-save" onclick="saveChanges()">Save Changes</button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <hr style="margin: 40px 0;">
+
+                        <h4 style="font-weight: 600; margin-bottom: 20px;">Change Password</h4>
+                        <form class="profile-form">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Current Password</label>
+                                    <input type="password" class="form-control" id="currentPassword">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">New Password</label>
+                                    <input type="password" class="form-control" id="newPassword">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Confirm New Password</label>
+                                    <input type="password" class="form-control" id="confirmPassword">
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn-save">Update Password</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--    Tracking State Modal-->
+    <div class="modal fade modal-xl" id="trackingState" tabindex="-1" aria-labelledby="trackingStateModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header modal-header">
+                    <h1 class="modal-title fs-5" id="trackingStateModalLabel">Order Status</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div id="trackingContainer"></div>
+
+
+                    <div class="container my-4">
+                        <div class="status-grid" id="status-grid">
+
+                            <!--                            &lt;!&ndash; Processing &ndash;&gt;-->
+                            <!--                            <div class="status-card">-->
+                            <!--                                <div class="status-icon processing">-->
+                            <!--                                    <i class="bi bi-hourglass-split"></i>-->
+                            <!--                                </div>-->
+                            <!--                                <div class="status-title">Processing</div>-->
+                            <!--                            </div>-->
+
+                            <!--                            &lt;!&ndash; Packing &ndash;&gt;-->
+                            <!--                            <div class="status-card">-->
+                            <!--                                <div class="status-icon packing">-->
+                            <!--                                    <i class="bi bi-box-seam"></i>-->
+                            <!--                                </div>-->
+                            <!--                                <div class="status-title">Packing</div>-->
+                            <!--                            </div>-->
+
+                            <!--                            &lt;!&ndash; Shipped &ndash;&gt;-->
+                            <!--                            <div class="status-card">-->
+                            <!--                                <div class="status-icon shipped">-->
+                            <!--                                    <i class="bi bi-airplane"></i>-->
+                            <!--                                </div>-->
+                            <!--                                <div class="status-title">Shipped</div>-->
+                            <!--                            </div>-->
+
+                            <!--                            &lt;!&ndash; Out for Delivery &ndash;&gt;-->
+                            <!--                            <div class="status-card">-->
+                            <!--                                <div class="status-icon out">-->
+                            <!--                                    <i class="bi bi-truck"></i>-->
+                            <!--                                </div>-->
+                            <!--                                <div class="status-title">Out for Delivery</div>-->
+                            <!--                            </div>-->
+
+                            <!--                            &lt;!&ndash; Delivered &ndash;&gt;-->
+                            <!--                            <div class="status-card status-active">-->
+                            <!--                                <div class="status-icon delivered">-->
+                            <!--                                    <i class="bi bi-bag-check"></i>-->
+                            <!--                                </div>-->
+                            <!--                                <div class="status-title">Delivered</div>-->
+                            <!--                            </div>-->
+
+                        </div>
+                    </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--    Order details Modal-->
+    <div class="modal fade modal-xl" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Order Details <span
+                            id="modal_ord">#ORD-******</span></h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <!-- Items Table -->
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Book</th>
+                                <th>Author</th>
+                                <th>Price</th>
+                                <th>Qty</th>
+                                <th>Total</th>
+                            </tr>
+                            </thead>
+
+                            <tbody id="order_table">
+
+                            <tr>
+                                <td>#**</td>
+                                <td>***** ****</td>
+                                <td>***** *******</td>
+                                <td>Rs.****.00</td>
+                                <td>***</td>
+                                <td>Rs.****.00</td>
+                            </tr>
+
+
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <!-- Price Summary -->
+                    <div class="row justify-content-end mt-4">
+
+                        <div class="col-md-4">
+
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Subtotal</span>
+                                <span id="sub_tot">Rs.****.00</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Shipping</span>
+                                <span id="shipping">Rs.****.00</span>
+                            </div>
+
+                            <hr>
+
+                            <div class="d-flex justify-content-between total-row">
+                                <span>Total</span>
+                                <span id="full_tot">Rs.****.00</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="assets/js/header.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/user.js"></script>
+    <script src="assets/js/signOut.js"></script>
+    <script src="assets/js/action.js"></script>
+
+    <script src="assets/js/notiflix-aio-3.2.8.min.js"></script>
+    <script>
+
+        function showSection(section) {
+            // Hide all sections
+            document.getElementById('overviewSection').style.display = 'none';
+            document.getElementById('ordersSection').style.display = 'none';
+            document.getElementById('wishlistSection').style.display = 'none';
+            document.getElementById('addressesSection').style.display = 'none';
+            document.getElementById('profileSection').style.display = 'none';
+
+            // Remove active class from all menu items
+            document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Show selected section
+            if (section === 'overview') {
+                document.getElementById('overviewSection').style.display = 'block';
+            } else if (section === 'orders') {
+                document.getElementById('ordersSection').style.display = 'block';
+            } else if (section === 'wishlist') {
+                document.getElementById('wishlistSection').style.display = 'block';
+            } else if (section === 'addresses') {
+                document.getElementById('addressesSection').style.display = 'block';
+            } else if (section === 'profile') {
+                document.getElementById('profileSection').style.display = 'block';
+            }
+
+            // Add active class to clicked menu item
+            event.target.closest('a').classList.add('active');
+
+            // Replace feather icons
+            feather.replace();
+        }
+    </script>
+</body>
+</html>

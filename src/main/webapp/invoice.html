@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice - FindABook</title>
+    <link rel="icon" href="assets/images/findabookLogo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <!-- PDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+        :root {
+            --ink: #17231b;
+            --forest: #35513f;
+            --forest-light: #4a6b54;
+            --brass: #b8863b;
+            --brass-light: #d4a45c;
+            --paper: #f7f2e7;
+            --paper-white: #fffdf8;
+            --text: #232921;
+            --muted: #6f7566;
+            --line: #e4dcc9;
+        }
+
+        body {
+            background: var(--paper);
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Fraunces', serif;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 253, 248, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 24px rgba(23, 35, 27, 0.06);
+            padding: 18px 0;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: var(--ink);
+            padding: 32px 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                    radial-gradient(circle at 10% 20%, rgba(184, 134, 59, 0.18) 0%, transparent 45%),
+                    radial-gradient(circle at 90% 90%, rgba(74, 107, 84, 0.4) 0%, transparent 50%);
+        }
+
+        .page-header .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header p {
+            color: #cfd6c9;
+        }
+
+        /* Invoice Card */
+        .invoice-card {
+            background: var(--paper-white);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 35px;
+            box-shadow: 0 8px 28px rgba(23, 35, 27, 0.06);
+            margin-top: 40px;
+        }
+
+        /* Titles */
+        .invoice-title {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 28px;
+            color: var(--ink);
+        }
+
+        /* Info sections */
+        .info-title {
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--ink);
+        }
+
+        .invoice-info {
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Table */
+        .table thead {
+            background: var(--paper);
+        }
+
+        .table th {
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .total-row {
+            font-weight: 700;
+            font-size: 18px;
+            font-family: 'Space Mono', monospace;
+            color: var(--forest);
+        }
+
+        /* Download button */
+        .download-btn {
+            background: var(--forest);
+            border: none;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .download-btn:hover {
+            background: var(--forest-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(53, 81, 63, 0.3);
+        }
+
+        /* Thank message */
+        .thank-text {
+            text-align: center;
+            margin-top: 40px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .company-footer {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+    </style>
+</head>
+
+<body>
+<div id="header"></div>
+
+<div class="page-header text-center">
+    <div class="container">
+        <h2>Order Invoice</h2>
+        <p>Thank you for shopping...</p>
+    </div>
+</div>
+
+
+<div class="container col-12" id="page">
+
+    <div class="invoice-card" id="invoice">
+
+        <!-- Top Section -->
+        <div class="row mb-4">
+
+            <div class="col-md-6">
+                <div class="invoice-title">Invoice</div>
+                <div class="invoice-info">
+                    Invoice No: <strong id="inv_id">#INV-****</strong><br>
+                    Order ID: <strong id="ord_id">#ORD-****</strong><br>
+                    Invoice Date: <strong id="date">***-****-***</strong><br>
+                    Payment Method: <strong>Credit Card</strong>
+                </div>
+            </div>
+
+            <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                <div class="info-title">Customer Details</div>
+                <div class="invoice-info">
+                    <span id="u_name">**** ***</span><br>
+                    <span id="u_email">*******@mail.com</span><br>
+                    <span id="u_mobi">*** **** *** </span><br>
+                    <span id="u_address">**************</br>
+                        *********
+                    </span>
+                    <span id="u_city">****</span><br>
+                    <span id="u_country">*** ****</span>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- Items Table -->
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Book</th>
+                    <th>Author</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+
+                <tbody id="order_table">
+
+                <tr>
+                    <td>#**</td>
+                    <td>***** ****</td>
+                    <td>***** *******</td>
+                    <td>Rs.****.00</td>
+                    <td>***</td>
+                    <td>Rs.****.00</td>
+                </tr>
+
+
+
+                </tbody>
+            </table>
+        </div>
+
+
+        <!-- Price Summary -->
+        <div class="row justify-content-end mt-4">
+
+            <div class="col-md-4">
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal</span>
+                    <span id="sub_tot">Rs.****.00</span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Shipping</span>
+                    <span id="shipping">Rs.****.00</span>
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between total-row">
+                    <span>Total</span>
+                    <span id="full_tot">Rs.****.00</span>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Thank message -->
+        <div class="thank-text">
+            Thank you for your purchase!
+            We hope you enjoy your books and look forward to serving you again.
+        </div>
+
+        <div class="company-footer">
+            BookWorm Haven • Online Bookstore<br>
+            support@bookwormhaven.com
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    <div class="container d-flex justify-content-between align-items-center mt-5 mb-5">
+
+        <button class="download-btn" onclick="printInvoice();">
+            <i data-feather="download"></i> Download PDF
+        </button>
+    </div>
+</footer>
+
+<script src="assets/js/header.js"></script>
+<script src="assets/js/notiflix-aio-3.2.8.min.js"></script>
+<script>
+
+    feather.replace();
+
+    function printInvoice() {
+        const body = document.body.innerHTML;
+        const pdf = document.getElementById("page").outerHTML;
+
+        document.body.innerHTML = pdf;
+        window.print();
+        document.body.innerHTML = body;
+    }
+
+    // function downloadPDF() {
+    //
+    //     const invoice = document.getElementById("invoice");
+    //
+    //     const opt = {
+    //         margin: 0.5,
+    //         filename: 'BookWorm_Invoice.pdf',
+    //         image: {type: 'jpeg', quality: 1},
+    //         html2canvas: {scale: 2},
+    //         jsPDF: {unit: 'in', format: 'a4', orientation: 'portrait'}
+    //     };
+    //
+    //     html2pdf().set(opt).from(invoice).save();
+    // }
+
+    window.addEventListener('load', async () => {
+
+        Notiflix.Loading.pulse("Wait...", {
+            clickToClose: false,
+            svgColor: '#0284c7',
+        });
+
+        try {
+            await loadInvoice();
+
+        } finally {
+            Notiflix.Loading.remove(1000);
+        }
+
+    });
+
+    let param = new URLSearchParams(window.location.search);
+    const oid = param.get("oid");
+
+    async function loadInvoice() {
+        try {
+            const response = await fetch(`api/products/${oid}/loadInvoiceData`);
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
+                if (data.status) {
+
+                    document.getElementById("u_name").innerHTML = data.items.firstName + " " + data.items.lastName;
+                    document.getElementById("u_email").innerHTML = data.items.email;
+                    document.getElementById("u_mobi").innerHTML = data.items.mobile;
+
+                    document.getElementById("u_address").innerHTML = data.items.lineOne +`,</br>`+ data.items.lineTwo+`,</br>`;
+                    document.getElementById("u_city").innerHTML = data.items.cityName+".";
+                    document.getElementById("u_country").innerHTML = data.items.country;
+
+                    document.getElementById("inv_id").innerHTML = "#INV-"+data.items.inv_id;
+                    document.getElementById("ord_id").innerHTML = "#ORD-"+data.items.order_id;
+
+                    const date = splitText(data.items.createdAt, "T");
+
+                    document.getElementById("date").innerHTML = date[0];
+
+                    const table = document.getElementById("order_table");
+                    table.innerHTML = "";
+                    let i = 1;
+                    let sub_tot = 0;
+                    data.items.orderDetails.forEach(order => {
+
+                        sub_tot += order.price * order.qty;
+
+                        table.innerHTML += `
+
+                <tr>
+                    <td>${i}</td>
+                    <td>${order.title}</td>
+                    <td>${order.author}</td>
+                    <td>Rs.${order.price}.00</td>
+                    <td>${order.qty}</td>
+                    <td>Rs.${order.price * order.qty}.00</td>
+                </tr>
+                        `;
+
+                        i++
+                    });
+
+                    document.getElementById("sub_tot").innerHTML = "Rs." + sub_tot + ".00";
+                    document.getElementById("shipping").innerHTML = "Rs." + data.items.shipping + ".00";
+                    const total = parseInt(data.items.shipping) + parseInt(sub_tot);
+                    document.getElementById("full_tot").innerHTML = "Rs." +total+ ".00";
+
+
+                } else {
+                    if (data.message === "Please log to your account") {
+                        window.location = "signIn.html";
+                    } else {
+                        Notiflix.Notify.warning(data.message, {
+                            position: 'right-top',
+                        });
+                    }
+                }
+
+            } else {
+                Notiflix.Notify.warning("Bad server response?", {
+                    position: 'right-top',
+                });
+            }
+
+
+        } catch (e) {
+            console.log(e.message);
+            Notiflix.Notify.failure(e.message, {
+                position: 'right-top',
+            });
+        }
+
+    }
+
+    function splitText(text, splitBy) {
+        return text.split(splitBy);
+    }
+
+</script>
+
+</body>
+</html>

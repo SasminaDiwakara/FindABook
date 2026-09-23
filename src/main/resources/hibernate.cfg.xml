@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/book_store?useSSL=false&amp;allowPublicKeyRetrieval=true</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">snd@2005</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.show_sql">true</property>
+
+        <mapping class="lk.jiat.fiadabook.entity.Address"/>
+        <mapping class="lk.jiat.fiadabook.entity.Books"/>
+        <mapping class="lk.jiat.fiadabook.entity.Cart"/>
+        <mapping class="lk.jiat.fiadabook.entity.Category"/>
+        <mapping class="lk.jiat.fiadabook.entity.City"/>
+        <mapping class="lk.jiat.fiadabook.entity.OrderItems"/>
+        <mapping class="lk.jiat.fiadabook.entity.Orders"/>
+        <mapping class="lk.jiat.fiadabook.entity.Payment"/>
+        <mapping class="lk.jiat.fiadabook.entity.Role"/>
+        <mapping class="lk.jiat.fiadabook.entity.Status"/>
+        <mapping class="lk.jiat.fiadabook.entity.Users"/>
+        <mapping class="lk.jiat.fiadabook.entity.Author"/>
+        <mapping class="lk.jiat.fiadabook.entity.Wishlist"/>
+
+    </session-factory>
+</hibernate-configuration>

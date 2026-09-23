@@ -1,0 +1,276 @@
+<style>
+
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        line-height: 1.6;
+        color: #1a202c;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        padding: 18px 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        transition: all 0.3s ease;
+    }
+
+    header:hover {
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    }
+
+    .logo-img {
+        height: 40px;
+        width: auto;
+    }
+
+    header .navbar-brand {
+        font-weight: 800;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 1.6rem;
+        letter-spacing: -0.5px;
+        transition: transform 0.3s ease;
+    }
+
+    header .navbar-brand:hover {
+        transform: scale(1.05);
+    }
+
+    header .nav-link {
+        color: #4a5568;
+        margin-right: 28px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        position: relative;
+        transition: color 0.3s ease;
+    }
+
+    header .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        transition: width 0.3s ease;
+    }
+
+    header .nav-link:hover {
+        color: #667eea;
+    }
+
+    header .nav-link:hover::after {
+        width: 100%;
+    }
+
+    .header-icons .cart-icon {
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .header-icons .cart-icon:hover {
+        transform: scale(1.1);
+    }
+
+    .cart-badge {
+        font-size: 0.65rem;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        border: 2px solid white;
+        font-weight: 700;
+    }
+
+    .profile-icon {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s ease;
+    }
+
+    .profile-icon:hover {
+        transform: scale(1.1);
+    }
+
+    .dropdown-menu {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+        padding: 20px;
+        margin-top: 16px;
+        background: white;
+        min-width: 240px;
+        animation: dropdownSlideIn 0.3s ease;
+    }
+
+    @keyframes dropdownSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .dropdown-header-custom {
+        padding: 0 0 12px 0;
+        border-bottom: 2px solid #f0f0f0;
+        margin-bottom: 16px;
+    }
+
+    .dropdown-header-custom h6 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #1a202c;
+    }
+
+    .dropdown-header-custom p {
+        margin: 4px 0 0 0;
+        font-size: 0.8rem;
+        color: #718096;
+    }
+
+    .dropdown-menu .btn {
+        padding: 12px 20px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dropdown-menu .btn::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .dropdown-menu .btn:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .dropdown-menu .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        position: relative;
+    }
+
+    .dropdown-menu .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.5);
+    }
+
+    .dropdown-menu .btn-outline-primary {
+        color: #667eea;
+        border: 2px solid #667eea;
+        background: transparent;
+    }
+
+    .dropdown-menu .btn-outline-primary:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-color: transparent;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.5);
+    }
+
+    .dropdown-divider-custom {
+        margin: 12px 0;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .dropdown-menu .dropdown-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        color: #4a5568;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 4px;
+    }
+
+    .dropdown-menu .dropdown-link:hover {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        color: #667eea;
+        transform: translateX(4px);
+    }
+
+    .dropdown-menu .dropdown-link i {
+        width: 18px;
+        height: 18px;
+    }
+
+    .logout-btn:hover {
+        background-color: red !important;
+        color: white !important;
+    }
+</style>
+
+<!-- Header -->
+<header class="shadow-sm sticky-top">
+    <div class="container d-flex justify-content-between align-items-center">
+        <a href="index.html" class="navbar-brand">
+            <img src="assets/images/findabookLogo.png" alt="logo" class="logo-img">
+        </a>
+
+        <nav class="d-none d-lg-flex">
+            <ul class="nav">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="#featured" class="nav-link">Featured</a></li>
+                <li class="nav-item"><a href="#popular-books" class="nav-link">Popular Books</a></li>
+                <li class="nav-item"><a href="#categories" class="nav-link">Categories</a></li>
+                <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+
+        <div class="header-icons d-flex align-items-center gap-3 ContentDropdown">
+
+        </div>
+    </div>
+</header>
